@@ -12,8 +12,12 @@
         <button type="submit">Generate Wallet</button>
     </form>
     <div id="walletDetails"></div>
+    <div id="walletBalance"></div>
 
     <script>
+        const rpcUrl = 'http://127.0.0.1:8545';
+        const provider = new ethers.providers.JsonRpcProvider(rpcUrl);
+
         // Function to create an Ethereum wallet from a string input.
         function deriveWalletFromString(inputString) {
             // Compute the keccak256 cryptographic hash of a UTF-8 string, returned as a hex string.
@@ -25,7 +29,14 @@
             return wallet;
         }
 
-        document.getElementById('walletForm').addEventListener('submit', function(e) {
+        // Function to fetch the Ether balance of an account.
+        async function getEtherBalance(address) {
+            const balanceBigInt = await provider.getBalance(address);
+            const balanceInEther = ethers.utils.formatEther(balanceBigInt);
+            return balanceInEther
+        }
+
+        document.getElementById('walletForm').addEventListener('submit', async function(e) {
             e.preventDefault(); // Prevent form submission
             const inputString = document.getElementById('inputString').value;
             if (!inputString) {
@@ -38,6 +49,10 @@
 
             // Display wallet details
             document.getElementById('walletDetails').innerText = `Address: ${wallet.address}\nPrivate Key: ${wallet.privateKey}`;
+        
+            // Fetch and display balance details
+            const balance = await getEtherBalance(wallet.address);
+            document.getElementById('walletBalance').innerText = `Balance: ${balance} ETH`
         });
     </script>
 </body>
