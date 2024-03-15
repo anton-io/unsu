@@ -1,2 +1,6 @@
+# General ignores.
 .idea
 .DS_Store
+
+# Project specific.
+data.json
