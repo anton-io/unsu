@@ -1,0 +1,46 @@
+#!/usr/bin/env python3
+
+import os
+from http.server import HTTPServer, BaseHTTPRequestHandler
+
+DIR_THIS = os.path.dirname(os.path.abspath(__file__))
+
+class WebServer(BaseHTTPRequestHandler):
+    def do_GET(self):
+        try:
+            if self.path == '/':
+                self.path = '/index.html'
+            fnf_file = os.path.abspath(f"{DIR_THIS}/www/{self.path[1:]}")
+            print(fnf_file)
+            if fnf_file.startswith(f"{DIR_THIS}/www") and os.path.exists(fnf_file):
+                with open(fnf_file, 'rb') as file_to_open:
+                    content = file_to_open.read()
+                self.send_response(200)
+                self.send_header('Content-type', 'text/html')
+                self.end_headers()
+                self.wfile.write(content)
+            else:
+                self.send_response(404)
+                self.send_header('Content-type', 'text/html')
+                self.end_headers()
+                self.wfile.write(b'404 Not Found')
+
+        except Exception as e:
+            print(f"error: {e}")
+            self.send_response(500)
+            self.send_header('Content-type', 'text/html')
+            self.end_headers()
+            self.wfile.write(b'500 Internal Server Error')
+
+
+def main():
+    try:
+        httpd = HTTPServer(('localhost', 8080), WebServer)
+        print("Server started at http://localhost:8080")
+        httpd.serve_forever()
+    except KeyboardInterrupt:
+        print("Server stopped.")
+        httpd.server_close()
+
+if __name__ == "__main__":
+    main()
