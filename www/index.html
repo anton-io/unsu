@@ -8,14 +8,16 @@
 
     <style>
         html {
-            box-sizing: content-box;
+            box-sizing: border-box;
             background-color: #C5C5FF;
+            color: #3F1291;
         }
 
         body {
             display: flex;
             align-items: center;
-            justify-content: center;
+            flex-direction: column;
+            padding-top: 90px;
             height: 100vh;
             margin: 0;
         }
@@ -43,7 +45,7 @@
             background-color: #3F1291;
             font-size: 20px;
             cursor: pointer;
-            margin-top: 25px;
+            margin-top: 5px;
             transition: .2s ease;
         }
         
@@ -64,6 +66,60 @@
             padding: 20px;
         }
 
+        .container-txns {
+          display: flex;
+          flex-direction: column;
+          width: calc(100% - 50px);
+          padding: 25px;
+        }
+
+        .row-txn {
+          display: flex;
+          padding: 16px;
+          background-color: #ffffff47;
+          margin-bottom: 5px;
+          border-radius: 10px;
+          justify-content: space-between;
+        }
+
+        .txn-left,
+        .txn-right {
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+          width: fit-content;
+          height: 100%;
+        }
+
+        .txn-amount {
+          font-weight: 500;
+        }
+
+        .txn-date {
+          opacity: .5;
+        }
+
+        .txn-right {
+          align-items: flex-end;
+        }
+
+        .txn-sender,
+        .txn-recipient {
+          position: relative;
+        }
+
+        .txn-sender::before,
+        .txn-recipient::before {
+          content: "from";
+          width: 80px;
+          margin-right: 5px;
+          opacity: .5;
+        }
+
+        .txn-recipient::before {
+          content: "to";
+        }
+
         @media (max-width: 950px) {
             .widget-wallet {
                 width: calc(100% - 50px);
@@ -80,12 +136,39 @@
         <button>Get started</button>
     </div>
 
-    <div class="container-transactions">
-        <div class="row-transaction">
-            
+    <div class="container-txns">
+        <div class="row-txn">
+          <div class="txn-left">
+            <span class="txn-amount">0.5 ETH</span>
+            <span class="txn-date">20-04-24</span>
+          </div>
+          <div class="txn-right">
+            <span class="txn-sender">234567890</span>
+            <span class="txn-recipient">234567890</span>
+          </div>
         </div>
-        <div class="row-transaction"></div>
-        <div class="row-transaction"></div>
+        
+        <div class="row-txn">
+          <div class="txn-left">
+            <span class="txn-amount">0.5 ETH</span>
+            <span class="txn-date">20-04-24</span>
+          </div>
+          <div class="txn-right">
+            <span class="txn-sender">234567890</span>
+            <span class="txn-recipient">234567890</span>
+          </div>
+        </div>
+
+        <div class="row-txn">
+          <div class="txn-left">
+            <span class="txn-amount">0.5 ETH</span>
+            <span class="txn-date">20-04-24</span>
+          </div>
+          <div class="txn-right">
+            <span class="txn-sender">234567890</span>
+            <span class="txn-recipient">234567890</span>
+          </div>
+        </div>
     </div>
 
 </body>
