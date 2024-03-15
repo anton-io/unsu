@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Ethereum Wallet Generator</title>
+    <script src="https://cdn.ethers.io/lib/ethers-5.2.umd.min.js" type="application/javascript"></script>
+</head>
+<body>
+    <h1>Ethereum Wallet Generator</h1>
+    <form id="walletForm">
+        <input type="text" id="inputString" placeholder="Enter a unique string">
+        <button type="submit">Generate Wallet</button>
+    </form>
+    <div id="walletDetails"></div>
+    <div id="walletBalance"></div>
+    <div id="walletQRCode"></div>
+
+    <!-- Form for sending Ether -->
+    <div id="sendEtherForm" style="display:none;">
+        <h2>Send Ether</h2>
+        <input type="text" id="recipientAddress" placeholder="Recipient Address">
+        <input type="text" id="sendAmount" placeholder="Amount in ETH">
+        <button type="button" onclick="sendEther()">Send</button>
+        <div id="transactionStatus"></div>
+    </div>
+
+    <script>
+        // Ethereum JSON-RPC url and provider object.
+        const rpcUrl = 'http://127.0.0.1:8545';
+        const provider = new ethers.providers.JsonRpcProvider(rpcUrl);
+
+        // Variable to store the wallet object.
+        let wallet;
+
+        // Function to create an Ethereum wallet from a string input.
+        function deriveWalletFromString(inputString) {
+            // Compute the keccak256 cryptographic hash of a UTF-8 string, returned as a hex string.
+            const seed = ethers.utils.id(inputString);
+            
+            // Use the hashed string to create a wallet.
+            return new ethers.Wallet(seed);
+        }
+
+        // Function to fetch the Ether balance of an account.
+        async function getEtherBalance(address) {
+            const balanceBigInt = await provider.getBalance(address);
+            const balanceInEther = ethers.utils.formatEther(balanceBigInt);
+            return balanceInEther
+        }
+
+        // Function to send Ether
+        async function sendEther() {
+            const recipient = document.getElementById('recipientAddress').value;
+            const amount = document.getElementById('sendAmount').value;
+            const transactionStatus = document.getElementById('transactionStatus');
+
+            if (!wallet || !provider) {
+                transactionStatus.innerText = 'Wallet not connected.';
+                return;
+            }
+
+            try {
+                const signer = wallet.connect(provider);
+                const tx = await signer.sendTransaction({
+                    to: recipient,
+                    value: ethers.utils.parseEther(amount)
+                });
+
+                transactionStatus.innerText = 'Transaction sent! Waiting for confirmation...';
+                await tx.wait();
+                transactionStatus.innerText = 'Transaction confirmed!';
+            } catch (error) {
+                transactionStatus.innerText = `Error: ${error.message}`;
+            }
+        }
+
+        document.getElementById('walletForm').addEventListener('submit', async function(e) {
+            e.preventDefault(); // Prevent form submission
+            const inputString = document.getElementById('inputString').value;
+            if (!inputString) {
+                alert('Please enter a string.');
+                return;
+            }
+
+            // Use the hashed string to create a wallet
+            wallet = deriveWalletFromString(inputString);
+        
+            // Display wallet details and show the send Ether form
+            const walletDetails = document.getElementById('walletDetails');
+            walletDetails.innerText = `Address: ${wallet.address}\nPrivate Key: ${wallet.privateKey}`;
+            document.getElementById('sendEtherForm').style.display = 'block';
+
+            // Display QR code for the wallet address
+            const qrCodeURL = `https://chart.googleapis.com/chart?cht=qr&chl=${wallet.address}&chs=160x160&chld=L|0`;
+            document.getElementById('walletQRCode').innerHTML = `<img src="${qrCodeURL}" alt="Wallet QR Code">`;
+
+            // Fetch and display balance details
+            const balance = await getEtherBalance(wallet.address);
+            document.getElementById('walletBalance').innerText = `Balance: ${balance} ETH`
+        });
+    </script>
+</body>
+</html>
