@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>QR-Code Reader</title>
+    <script src="https://unpkg.com/html5-qrcode" type="application/javascript"></script>
+</head>
+<body>
+    <h1>QR-Code Reader</h1>
+    <div id="qrScanner" width="600px"></div>
+    <button onclick="startScan()">Scan QR Code</button>
+    <p id="qrText">QR Code text will appear here</p>
+    
+    <script>
+        function startScan() {
+            const html5QrCode = new Html5Qrcode("qrScanner");
+            const qrCodeSuccessCallback = (decodedText, decodedResult) => {
+                // Handle on success
+                document.getElementById("qrText").innerText = decodedText;
+                html5QrCode.stop().then(ignore => {}).catch(err => {});
+            };
+            const config = { fps: 10, qrbox: { width: 250, height: 250 } };
+            
+            // Select the back camera.
+            html5QrCode.start({ facingMode: "environment" }, config, qrCodeSuccessCallback);
+        }
+    </script>
+</body>`
+</html>
