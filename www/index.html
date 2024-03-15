@@ -34,6 +34,20 @@
             width: auto;
         }
 
+        .menu {
+            display: none;
+            position: fixed;
+            top: 25px;
+            right: 25px;
+            height: 40px;
+            width: auto;
+            cursor: pointer;
+        }
+
+        .logged-in .menu {
+            display: block;
+        }
+
         #inputString {
             width: 100%;
             height: 70px;
@@ -45,6 +59,7 @@
             outline: none;
             font-family: unset;
             padding: 20px;
+            box-shadow: rgba(9, 30, 66, 0.25) 0px 4px 8px -2px, rgba(9, 30, 66, 0.08) 0px 0px 0px 1px;
         }
         
         #inputString::placeholder {
@@ -61,12 +76,23 @@
             background-color: #3F1291;
             font-size: 20px;
             cursor: pointer;
-            margin-top: 5px;
+            margin-top: 10px;
             transition: .2s ease;
+            box-shadow: rgba(9, 30, 66, 0.25) 0px 4px 8px -2px, rgba(9, 30, 66, 0.08) 0px 0px 0px 1px;
         }
 
         button:hover {
             opacity: .8;
+        }
+
+        .container-buttons {
+            display: none;
+            width: 100%;
+            justify-content: space-between;
+        }
+
+        .container-buttons button {
+            width: calc(50% - 5px);
         }
 
         .details-address,
@@ -75,17 +101,72 @@
             width: 100%;
             line-break: anywhere;
             text-align: center;
+            background-color: #3F1291;
+            color: #C5C5FF;
+            padding: 20px;
+            border-radius: 12px;
+        }
+
+        .details-key {
+            margin-bottom: 0;
+        }
+
+        .subheader {
+            opacity: .5;
+            margin-top: 0;
+        }
+
+        #walletDetails {
+            display: none;
+            position: fixed;
+            top: 85px;
+            left: 25px;
+            right: 25px;
+            padding: 20px;
+            background-color: #ffffff;
+            box-shadow: rgba(9, 30, 66, 0.25) 0px 4px 8px -2px, rgba(9, 30, 66, 0.08) 0px 0px 0px 1px;
+            border-radius: 20px;
+            z-index: 2;
+        }
+
+        #walletBalance {
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .details-balance {
+            font-size: 30px;
+            margin: 10px 0;
+        }
+
+        .details-open #walletDetails {
+            display: block;
+        }
+
+        .logged-in .container-buttons {
+            display: flex;
+        }
+
+        .logged-in #walletForm {
+            display: none;
         }
     </style>
 </head>
 <body>
-    <svg class="logo" fill="none" height="316" viewBox="0 0 978 316" width="978" xmlns="http://www.w3.org/2000/svg"><rect fill="#3f1291" height="316" rx="65" width="978"/><g fill="#c5c5ff"><path d="m720.922 65h33.5c2.167.3333 3.25 1.3333 3.25 3v143.25h70v-33.5c.333-2 1.333-3 3-3h33.5v-106.75c.333-2 1.417-3 3.25-3h33.5c2 .3333 3 1.3333 3 3v180c0 2-1 3-3 3h-33.5c-2.167 0-3.25-1-3.25-3v-33.5h-33.5v33.5c0 2-1 3-3 3h-70c-2.167 0-3.25-1-3.25-3v-33.5h-33.5c-2 0-3-1.083-3-3.25v-143.25c.333-2 1.333-3 3-3z"/><path d="m544.113 64h107.5c2 .3333 3 1.3333 3 3v34c0 2-1 3-3 3h-107.5v33.75h107.5c2 .333 3 1.333 3 3v34h34c2 .333 3 1.333 3 3v33.75c0 2-1 3-3 3h-34v34c0 2-1 3-3 3h-144.5c-2 0-3-1-3-3v-34c.334-2 1.334-3 3-3h144.5v-33.75h-107.5c-2 0-3-1-3-3v-34h-34c-2 0-3-1-3-3v-33.75c.334-2 1.334-3 3-3h34v-34c.167-2 1.167-3 3-3z"/><path d="m292.555 64.75h33.5c2.166.3333 3.25 1.3333 3.25 3v33.5h33.5v-33.5c.333-2 1.333-3 3-3h70c2.166.3333 3.25 1.3333 3.25 3v33.5h33.5c2 .333 3 1.417 3 3.25v143.25c0 2-1 3-3 3h-33.5c-2.167 0-3.25-1-3.25-3v-143.25h-70v33.5c0 2-1 3-3 3h-33.5v106.75c0 2-1.084 3-3.25 3h-33.5c-2 0-3-1-3-3v-180c.333-2 1.333-3 3-3z"/><path d="m78 65h33.5c2.167.3333 3.25 1.3333 3.25 3v143.25h70v-33.5c.333-2 1.333-3 3-3h33.5v-106.75c.333-2 1.417-3 3.25-3h33.5c2 .3333 3 1.3333 3 3v180c0 2-1 3-3 3h-33.5c-2.167 0-3.25-1-3.25-3v-33.5h-33.5v33.5c0 2-1 3-3 3h-70c-2.167 0-3.25-1-3.25-3v-33.5h-33.5c-2 0-3-1.083-3-3.25v-143.25c.3333-2 1.3333-3 3-3z"/></g></svg>
+    <img class="logo" src="logo.svg" alt="Unsu Logo">
+    <img class="menu" src="person.svg" alt="Person Icon">
     <form id="walletForm">
         <textarea type="text" id="inputString" placeholder="Enter a unique string"></textarea>
         <button type="submit">Get started</button>
     </form>
-    <div id="walletDetails"></div>
     <div id="walletBalance"></div>
+    <div class="container-buttons">
+        <button class="send">Send</button>
+        <button class="recieve">Receive</button>
+    </div>
+    <div id="walletDetails"></div>
 
     <script>
         const rpcUrl = 'https://eth-goerli.g.alchemy.com/v2/n-8ZlU1-OeBOYCvjCZTQCPfs5dR_0Z75';
@@ -97,9 +178,7 @@
             const seed = ethers.utils.id(inputString);
             
             // Use the hashed string to create a wallet.
-            const wallet = new ethers.Wallet(seed);
-            
-            return wallet;
+            return new ethers.Wallet(seed);
         }
 
         // Function to fetch the Ether balance of an account.
@@ -121,12 +200,29 @@
             const wallet = deriveWalletFromString(inputString);
 
             // Display wallet details
-            document.getElementById('walletDetails').innerHTML = `<p class="subheader">Address:</p> <p class="details-address">${wallet.address}\n</p> <p class="subheader">Private Key:</p> <p class="details-key"">${wallet.privateKey}</p>`;
+            document.getElementById('walletDetails').innerHTML = `<p class="subheader">Address:</p> <p class="details-address blurred">${wallet.address}\n</p> <p class="subheader">Private Key:</p> <p class="details-key blurred">${wallet.privateKey}</p>`;
         
             // Fetch and display balance details
             const balance = await getEtherBalance(wallet.address);
-            document.getElementById('walletBalance').innerHTML = `<p class="subheader">Balance:</p> <p class="details-balance">${balance} ETH</p>`
+            document.getElementById('walletBalance').innerHTML = `<p class="details-balance">${balance} ETH</p> <p class="subheader">Balance</p `
+
+            document.documentElement.classList.add('logged-in');
+
         });
+
+        // Toggle menu
+        document.querySelector('.menu').addEventListener('click', function() {
+            document.documentElement.classList.toggle('details-open');
+            this.src = this.src.includes('close.svg') ? 'person.svg' : 'close.svg';
+        });
+
+        document.querySelectorAll('.reveal').forEach(element => {
+            element.addEventListener('click', function() {
+                document.documentElement.classList.toggle('no-blur');
+            });
+        });
+
+
     </script>
 </body>
 </html>
