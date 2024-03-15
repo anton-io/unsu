@@ -28,8 +28,8 @@
 
         .logo {
             position: fixed;
-            top: 25px;
-            left: 25px;
+            top: 30px;
+            left: 30px;
             height: 40px;
             width: auto;
         }
@@ -37,8 +37,8 @@
         .menu {
             display: none;
             position: fixed;
-            top: 25px;
-            right: 25px;
+            top: 30px;
+            right: 30px;
             height: 40px;
             width: auto;
             cursor: pointer;
@@ -116,16 +116,16 @@
             margin-top: 0;
         }
 
-        #walletDetails {
+        .modal {
             display: none;
             position: fixed;
-            top: 85px;
-            left: 25px;
-            right: 25px;
-            padding: 20px;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 30px;
             background-color: #ffffff;
             box-shadow: rgba(9, 30, 66, 0.25) 0px 4px 8px -2px, rgba(9, 30, 66, 0.08) 0px 0px 0px 1px;
-            border-radius: 20px;
+            border-radius: 20px 20px 0 0;
             z-index: 2;
         }
 
@@ -141,7 +141,9 @@
             margin: 10px 0;
         }
 
-        .details-open #walletDetails {
+        .details-open #walletDetails,
+        .open-send #walletSend,
+        .open-receive #walletReceive {
             display: block;
         }
 
@@ -151,6 +153,26 @@
 
         .logged-in #walletForm {
             display: none;
+        }
+
+        /* Send */
+        #send-amount,
+        #send-recipient {
+            width: 100%;
+            height: 50px;
+            border: none;
+            background-color: #C5C5FF;
+            border-radius: 12px;
+            padding: 20px;
+            outline: none;
+        }
+
+        #send-recipient {
+            margin-bottom: 15px;
+        }
+
+        #send-confirm {
+            margin-top: 25px;
         }
     </style>
 </head>
@@ -164,10 +186,19 @@
     <div id="walletBalance"></div>
     <div class="container-buttons">
         <button class="send">Send</button>
-        <button class="recieve">Receive</button>
+        <button class="receive">Receive</button>
     </div>
-    <div id="walletDetails"></div>
-
+    <div id="walletDetails" class="modal"></div>
+    <div id="walletSend" class="modal">
+        <p class="subheader">Send to</p>
+        <input id="send-recipient" type="text">
+        <p class="subheader">Amount (in USD)</p>
+        <input id="send-amount" type="text">
+        <button id="send-confirm">Send</button>
+    </div>
+    <div id="walletReceive" class="modal">
+        QR CODE :P
+    </div>
     <script>
         const rpcUrl = 'https://eth-goerli.g.alchemy.com/v2/n-8ZlU1-OeBOYCvjCZTQCPfs5dR_0Z75';
         const provider = new ethers.providers.JsonRpcProvider(rpcUrl);
@@ -216,13 +247,15 @@
             this.src = this.src.includes('close.svg') ? 'person.svg' : 'close.svg';
         });
 
-        document.querySelectorAll('.reveal').forEach(element => {
-            element.addEventListener('click', function() {
-                document.documentElement.classList.toggle('no-blur');
-            });
+        // Toggle send
+        document.querySelector('.send').addEventListener('click', function() {
+            document.documentElement.classList.toggle('open-send');
         });
 
-
+        // Toggle receive
+        document.querySelector('.receive').addEventListener('click', function() {
+            document.documentElement.classList.toggle('open-receive');
+        });
     </script>
 </body>
 </html>
