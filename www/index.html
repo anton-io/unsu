@@ -4,190 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>unsu</title>
+    <link rel="stylesheet" href="style.css">
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
     <link rel="manifest" href="/site.webmanifest">
     <script src="https://cdn.ethers.io/lib/ethers-5.2.umd.min.js" type="application/javascript"></script>
-    <style>
-
-        :root {
-            --black: #000000;
-            --black-50: rgba(255, 255, 255, 0.5);
-            --light-gray: #E6EAF0;
-            --bg-color: #f7f7f7;
-            --white: #ffffff;
-            --positive-green: #2fbd6a;
-            --negative-red: #E03853;
-        }
-
-        * {
-            box-sizing: border-box;
-            font-family: sans-serif;
-            font-size: 16px;
-        }
-
-        html {
-            background-color: var(--bg-color);
-            color: var(--black);
-        }
-
-        body {
-            margin: 0;
-            padding: 100px 30px 30px 30px;
-        }
-
-        .logo {
-            position: fixed;
-            top: 30px;
-            left: 30px;
-            height: 40px;
-            width: auto;
-        }
-
-        .menu {
-            display: none;
-            position: fixed;
-            top: 30px;
-            right: 30px;
-            height: 40px;
-            width: auto;
-            cursor: pointer;
-        }
-
-        .logged-in .menu {
-            display: block;
-        }
-
-        #inputString {
-            width: 100%;
-            height: 70px;
-            resize: none;
-            color: var(--black);
-            background-color: var(--white);
-            border: none;
-            border-radius: 12px;
-            outline: none;
-            font-family: unset;
-            padding: 20px;
-            box-shadow: rgba(9, 30, 66, 0.25) 0px 4px 8px -2px, rgba(9, 30, 66, 0.08) 0px 0px 0px 1px;
-        }
-        
-        #inputString::placeholder {
-            color: var(--black);
-            opacity: .5;
-        }
-
-        button {
-            width: 100%;
-            height: 50px;
-            border: none;
-            border-radius: 12px;
-            color: var(--white);
-            background-color: var(--black);
-            font-size: 20px;
-            cursor: pointer;
-            margin-top: 10px;
-            transition: .2s ease;
-            box-shadow: rgba(9, 30, 66, 0.25) 0px 4px 8px -2px, rgba(9, 30, 66, 0.08) 0px 0px 0px 1px;
-        }
-
-        button:hover {
-            opacity: .8;
-        }
-
-        .container-buttons {
-            display: none;
-            width: 100%;
-            justify-content: space-between;
-        }
-
-        .container-buttons button {
-            width: calc(50% - 5px);
-        }
-
-        .details-address,
-        .details-key {
-            text-wrap: wrap;
-            width: 100%;
-            line-break: anywhere;
-            text-align: center;
-            background-color: var(--white);
-            color: var(--black);
-            padding: 20px;
-            border-radius: 12px;
-        }
-
-        .details-key {
-            margin-bottom: 0;
-        }
-
-        .subheader {
-            opacity: .5;
-            margin-top: 0;
-        }
-
-        .modal {
-            display: none;
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            padding: 30px;
-            background-color: var(--bg-color);
-            box-shadow: rgba(9, 30, 66, 0.25) 0px 4px 8px -2px, rgba(9, 30, 66, 0.08) 0px 0px 0px 1px;
-            border-radius: 20px 20px 0 0;
-            z-index: 2;
-        }
-
-        #walletBalance {
-            display: flex;
-            justify-content: center;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .details-balance {
-            font-size: 30px;
-            margin: 10px 0;
-        }
-
-        .open-details #walletDetails,
-        .open-send #walletSend,
-        .open-receive #walletReceive {
-            display: block;
-        }
-
-        .logged-in .container-buttons {
-            display: flex;
-        }
-
-        .logged-in #walletForm {
-            display: none;
-        }
-
-        /* Send */
-        #send-amount,
-        #send-recipient {
-            width: 100%;
-            height: 50px;
-            border: none;
-            color: var(--black);
-            border-radius: 12px;
-            padding: 20px;
-            outline: none;
-            background-color: var(--white);
-            box-shadow: rgba(9, 30, 66, 0.1) 0px 1px 1px, rgba(9, 30, 66, .1) 0px 0px 1px 1px;
-        }
-
-        #send-recipient {
-            margin-bottom: 15px;
-        }
-
-        #send-confirm {
-            margin-top: 25px;
-        }
-    </style>
+    <script src="https://unpkg.com/html5-qrcode" type="application/javascript"></script>
 </head>
 <body>
     <img class="logo" src="logo.svg" alt="Unsu Logo">
@@ -201,18 +24,24 @@
     <div class="container-buttons">
         <button class="send">Send</button>
         <button class="receive">Receive</button>
-        <button class="receive" onclick="share()">Share</button>
     </div>
     <div id="walletDetails" class="modal"></div>
     <div id="walletSend" class="modal">
+        <p class="title-modal">Send</p>
+        <img class="close-modal" src="close-small.svg" alt="Close">
         <p class="subheader">Send to</p>
-        <input id="send-recipient" type="text">
+        <div class="container-send-recipient">
+            <input id="send-recipient" type="text" placeholder="0x..."> <a onclick="startScan()" id="link-camera"><img src="icon-camera.svg" alt=""></a>
+        </div>
         <p class="subheader">Amount (in USD)</p>
-        <input id="send-amount" type="text">
+        <input id="send-amount" type="text" placeholder="$">
         <button id="send-confirm">Send</button>
     </div>
     <div id="walletReceive" class="modal">
+        <p class="title-modal">Receive</p>
+        <img class="close-modal" src="close-small.svg" alt="Close">
         <div id="walletQRCode"></div>
+        <button class="share" onclick="share()">Share</button>
     </div>
     <script>
         const rpcUrl = 'https://eth-sepolia.g.alchemy.com/v2/gr3viaHlqz-Mr-Ao3cBAwAHBerPMtVVs';
@@ -296,7 +125,7 @@
             wallet = deriveWalletFromString(seedPhrase);
 
             // Display wallet details
-            document.getElementById('walletDetails').innerHTML = `<p class="subheader">Address:</p> <p class="details-address blurred">${wallet.address}\n</p> <p class="subheader">Private Key:</p> <p class="details-key blurred">${wallet.privateKey}</p>`;
+            document.getElementById('walletDetails').innerHTML = `<p class="title-modal">Wallet details</p><img class="close-modal" src="close-small.svg" alt="Close"><p class="subheader">Address:</p> <p class="details-address blurred">${wallet.address}\n</p> <p class="subheader">Private Key:</p> <p class="details-key blurred">${wallet.privateKey}</p> <button id="send-wallet">Send wallet</button>`;
 
             // Fetch asset prices and balances in parallel
             const pricePromises = assets.map(asset => getPrice(asset));
@@ -376,6 +205,29 @@
             document.documentElement.classList.remove('open-send');
             document.documentElement.classList.remove('open-details');
         });
+
+        // Close modals
+        document.querySelectorAll('.close-modal').forEach(function(element) {
+            element.addEventListener('click', function() {
+                document.documentElement.classList.remove('open-receive');
+                document.documentElement.classList.remove('open-send');
+                document.documentElement.classList.remove('open-details');
+            });
+        });
+
+        // Scan QR Code
+        function startScan() {
+            const html5QrCode = new Html5Qrcode("qrScanner");
+            const qrCodeSuccessCallback = (decodedText, decodedResult) => {
+                // Handle on success
+                document.getElementById("qrText").innerText = decodedText;
+                html5QrCode.stop().then(ignore => {}).catch(err => {});
+            };
+            const config = { fps: 10, qrbox: { width: 250, height: 250 } };
+            
+            // Select the back camera.
+            html5QrCode.start({ facingMode: "environment" }, config, qrCodeSuccessCallback);
+        }
     </script>
 </body>
 </html>

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Simple ENS Set/Get</title>
+</head>
+<body>
+<h1>Simple ENS Set/Get</h1>
+
+<div>
+  <h2>Enter a name:</h2>
+  <input type="text" id="iName" placeholder="<account>.unsu.eth"/>
+  <button onclick="getAddress()">Get Addr</button>
+</div>
+
+<div>
+</div>
+
+<div>
+  <h2>Set Address for Name</h2>
+  <input type="text" id="iAddr" placeholder="0x123..."/>
+  <button onclick="setAddress()">Set Value</button>
+</div>
+
+<script>
+  function _empty(obj) { return Object.keys(obj).length === 0; }
+
+  let base_url = `https://unsu.com/api/resolver`;
+  if (document.location.host.substring(0,4) === '127.')
+    base_url = `http://127.0.0.1:3334`;
+
+  function getAddress()
+  {
+    const name = document.getElementById('iName').value;
+    if (!name.endsWith(".unsu.eth"))
+    {
+      alert('invalid name');
+      return
+    }
+
+    fetch(`${base_url}/${name}`,
+      {headers: {'Access-Control-Allow-Origin':'*'}}
+    )
+    .then(response => response.json())
+    .then(data => {
+      if(_empty(data))
+        document.getElementById('iAddr').value = '<not set>';
+      else
+        document.getElementById('iAddr').value = data;
+    })
+    .catch((error) => {
+      console.error('Error:', error);
+    });
+  }
+
+  function setAddress()
+  {
+    const name = document.getElementById('iName').value.trim();
+    const addr = document.getElementById('iAddr').value.trim();
+
+    if (!name.endsWith(".unsu.eth"))
+    {
+      alert('invalid name');
+      return
+    }
+
+    if (!addr.match("^0x[0-9a-fA-F]{40}$"))
+    {
+      alert('invalid address');
+      return
+    }
+
+    fetch(`${base_url}/${name}/${addr}`, {
+       method: 'POST',
+       headers: {'Access-Control-Allow-Origin':'*'}
+    })
+      .then(response => response.json())
+      .then(data => {
+        alert('success')
+        console.log('Success:', data);
+      })
+      .catch((error) => {
+        alert(`error: ${error}`)
+        console.error('Error:', error);
+      });
+  }
+</script>
+</body>
+</html>
