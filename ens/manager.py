@@ -37,14 +37,14 @@ def route_get_ens_name(domain):
     try:
         addr = data[domain]
         jdata = {
-            'addresses': {60: addr},
+            'addresses': {60: addr},'text': {}
         }
     except:
         addr = '<not set>'
         jdata = {}
         app.logger.warning(f"could not resolve name for: {domain}")
 
-    app.logger.warning(f"served: {domain} => {addr}")
+    app.logger.info(f"served: {domain} => {addr}")
     return jsonify(jdata)
 
 
@@ -61,7 +61,7 @@ def route_add_ens_entry(domain=None, addr=None):
 
     data[domain] = addr
     _data_save()
-    app.logger.warning(f"updated: {domain} => {addr}")
+    app.logger.info(f"updated: {domain} => {addr}")
     return jsonify({'updated': {'name': domain, 'addr': addr}}), 201
 
 
