@@ -26,6 +26,7 @@
     <textarea type="text" id="inputString" placeholder="Enter a unique string"></textarea>
     <button type="submit">Get started</button>
   </form>
+  <div id="walletName"></div>
   <div id="walletBalance"></div>
   <div class="container-buttons">
     <button class="send" data-trigger="walletSend">Send</button>
@@ -149,6 +150,11 @@
 
     function _empty(obj) { return Object.keys(obj).length === 0; }
 
+    let base_url = `https://unsu.com/api/resolver`;
+    if (document.location.host.substring(0,4) === '127.')
+      base_url = `http://127.0.0.1:3334`;
+
+    
     function setProvider(index) {
       const rpcConfig = rpcConfigs[index]
 
@@ -422,17 +428,20 @@
       fetch(`${base_url}/name/${addr}`,
         { headers: { 'Access-Control-Allow-Origin': '*' } }
       )
-        .then(response => response.json())
-        .then(data => {
-          if (_empty(data) || data.name === '')
-            ensName = '';
-          else
-            ensName = data.name;
-          console.log(`info: resolved ${addr} -> ${ensName}`);
-        })
-        .catch((error) => {
-          console.error('Error:', error);
-        });
+      .then(response => response.json())
+      .then(data => {
+        if(_empty(data) || data.name === '')
+          ensName = '';
+        else {
+          ensName = data.name;
+          document.getElementById('walletName').innerText = ensName;
+        }
+
+        console.log(`info: resolved ${addr} -> ${ensName}`);
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
     }
   </script>
 </body>
