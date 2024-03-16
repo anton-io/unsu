@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>unsu</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+</head>
+<body>
+    <div id="qrCode"></div>
+    <div id="ensText"></div>
+    <button onclick="window.print();">Print</button>
+
+    <script>
+        const queryString = window.location.search;
+        const urlParams = new URLSearchParams(queryString);
+
+        // Display QR code for the wallet address
+        const address = urlParams.get('address');
+        const qrCodeURL = `https://chart.googleapis.com/chart?cht=qr&chl=${address}&chs=160x160&chld=L|0`;
+        document.getElementById('qrCode').innerHTML = `<img src="${qrCodeURL}" alt="Wallet QR Code">`;
+
+        // Display ENS text
+        const ens = urlParams.get('ens');
+        if (ens) {
+            document.getElementById('ensText').innerText = ens;
+        }
+    </script>
+</body>
+</html>

@@ -188,6 +188,7 @@
     <div class="container-buttons">
         <button class="send">Send</button>
         <button class="receive">Receive</button>
+        <button class="receive" onclick="share()">Share</button>
     </div>
     <div id="walletDetails" class="modal"></div>
     <div id="walletSend" class="modal">
@@ -198,11 +199,13 @@
         <button id="send-confirm">Send</button>
     </div>
     <div id="walletReceive" class="modal">
-        QR CODE :P
+        <div id="walletQRCode"></div>
     </div>
     <script>
         const rpcUrl = 'https://eth-goerli.g.alchemy.com/v2/n-8ZlU1-OeBOYCvjCZTQCPfs5dR_0Z75';
         const provider = new ethers.providers.JsonRpcProvider(rpcUrl);
+
+        let wallet;
 
         // Function to create an Ethereum wallet from a string input.
         function deriveWalletFromString(inputString) {
@@ -226,7 +229,7 @@
 
         async function login(seedPhrase) {
             // Use the hashed string to create a wallet
-            const wallet = deriveWalletFromString(seedPhrase);
+            wallet = deriveWalletFromString(seedPhrase);
 
             // Display wallet details
             document.getElementById('walletDetails').innerHTML = `<p class="subheader">Address:</p> <p class="details-address blurred">${wallet.address}\n</p> <p class="subheader">Private Key:</p> <p class="details-key blurred">${wallet.privateKey}</p>`;
@@ -235,7 +238,18 @@
             const balance = await getEtherBalance(wallet.address);
             document.getElementById('walletBalance').innerHTML = `<p class="details-balance">${balance} ETH</p> <p class="subheader">Balance</p `
 
+            // Display QR code for the wallet address
+            const qrCodeURL = `https://chart.googleapis.com/chart?cht=qr&chl=${wallet.address}&chs=160x160&chld=L|0`;
+            document.getElementById('walletQRCode').innerHTML = `<img src="${qrCodeURL}" alt="Wallet QR Code">`;
+
             document.documentElement.classList.add('logged-in');
+        }
+
+        function share() {
+            const address = wallet.address;
+            const ens = "afonso.eth"
+            const url = `share.html?address=${address}&ens=${ens}`;
+            window.open(url, '_blank');
         }
 
         // Fetch the seed value from the URL and login
