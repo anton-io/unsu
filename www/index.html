@@ -90,11 +90,6 @@
   <a class="link-eth" href="https://ethereum.org/en/learn/" target="_blank">What's this? Click here to learn more.</a>
   <script>
     let ensName = '';
-    let base_url = `https://unsu.com/api/resolver`;
-    if (document.location.host.substring(0, 4) === '127.') {
-      base_url = `http://127.0.0.1:3334`;
-    }
-
     const rpcConfigs = [
       {
         'name': 'Ethereum',
@@ -175,7 +170,7 @@
     document.getElementById('inputString').addEventListener('keydown', function (event) {
       // Check if the Enter key is pressed
       if (event.key === 'Enter' && !event.shiftKey) {
-        // Prevent the default action to avoid line breaks in the textarea
+        // Prevent the default action to avoid line breaks in the textarea.
         event.preventDefault();
         login();
       }
@@ -239,7 +234,6 @@
 
       // Use the hashed string to create a wallet
       wallet = deriveWalletFromString(seedPhrase);
-      resolveAddressName(wallet.address);
 
       // Display wallet details.
       document.getElementById('details-address').textContent = wallet.address;
@@ -252,6 +246,7 @@
         Promise.all(pricePromises),
         Promise.all(balancePromises)
       ]);
+      resolveAddressName(wallet.address);
 
       // Display balance details.
       let walletBalance = 0;
