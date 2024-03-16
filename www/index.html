@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,11 +13,12 @@
   <script src="https://cdn.ethers.io/lib/ethers-5.6.umd.min.js" type="application/javascript"></script>
   <script src="https://unpkg.com/html5-qrcode" type="application/javascript"></script>
 </head>
+
 <body>
-    <header>
-      <img class="logo" src="logo.svg" alt="Unsu Logo">
-      <img class="menu" data-trigger="walletDetails" src="person.svg" alt="Person Icon">
-    </header>
+  <header>
+    <img class="logo" src="logo.svg" alt="Unsu Logo">
+    <img class="menu" data-trigger="walletDetails" src="person.svg" alt="Person Icon">
+  </header>
   <div class="container-qr">
     <div id="qrScanner" width="100%"></div>
   </div>
@@ -30,15 +32,16 @@
     <button class="receive" data-trigger="walletReceive">Receive</button>
   </div>
   <div id="walletAssets"></div>
-  
+
   <div id="walletDetails" class="modal">
     <div class="modal-content">
       <p class="title-modal">Wallet details</p>
       <img class="close-modal" onclick="closeAllModals()" src="close-small.svg" alt="Close">
-      
+
       <p class="subheader">Address:</p>
       <p id="details-address" class="blurred"></p>
-      <a class="button-secondary" data-trigger="setEns" onclick="toggleModal('setEns')"><img class="logo-ens" src="logo-ens.svg" alt="ENS logo"> Set ENS name</a>
+      <a class="button-secondary" data-trigger="setEns" onclick="toggleModal('setEns')"><img class="logo-ens"
+          src="logo-ens.svg" alt="ENS logo"> Set ENS name</a>
 
       <p class="subheader">Private Key:</p>
       <p id="details-key" class="blurred"></p>
@@ -51,7 +54,7 @@
       <button id="logout-btn" onclick="logout()">Logout</button>
     </div>
   </div>
-  
+
   <div id="walletSend" class="modal">
     <div class="modal-content">
       <p class="title-modal">Send</p>
@@ -74,15 +77,15 @@
       <button class="share" onclick="share()">Share</button>
     </div>
   </div>
-    <div id="setEns" class="modal">
-        <div class="modal-content">
-            <p class="title-modal">Set ENS</p>
-            <img class="close-modal" onclick="closeAllModals()"src="close-small.svg" alt="Close">
-            <h2>Enter a name:</h2>
-            <input type="text" id="iName" placeholder="yourname.unsu.eth"/>
-            <button onclick="setAddress()"><img class="logo-ens" src="logo-ens.svg" alt=""> Set ENS</button>
-        </div>
+  <div id="setEns" class="modal">
+    <div class="modal-content">
+      <p class="title-modal">Set ENS</p>
+      <img class="close-modal" onclick="closeAllModals()" src="close-small.svg" alt="Close">
+      <h2>Enter a name:</h2>
+      <input type="text" id="iName" placeholder="yourname.unsu.eth" />
+      <button onclick="setAddress()"><img class="logo-ens" src="logo-ens.svg" alt=""> Set ENS</button>
     </div>
+  </div>
   <a class="link-eth" href="https://ethereum.org/en/learn/" target="_blank">What's this? Click here to learn more.</a>
   <script>
     let ensName = '';
@@ -140,10 +143,10 @@
     let provider;
 
     function _empty(obj) { return Object.keys(obj).length === 0; }
-    
+
     function setProvider(index) {
       const rpcConfig = rpcConfigs[index]
-      
+
       if (rpcConfig.name == 'Ethereum') {
         provider = new ethers.providers.JsonRpcProvider(rpcConfig.url, {
           name: 'sepolia',
@@ -316,17 +319,17 @@
       login(seedValue)
     }
 
-        // Close all modals
-        function closeAllModals() {
-            document.querySelectorAll('.modal').forEach(modal => {
-                modal.classList.remove('current');
-            });
-            // Hiding .container-qr by setting its display to 'none'
-            const containerQr = document.querySelector('.container-qr');
-            if (containerQr) {
-                containerQr.style.display = 'none';
-            }
-        }
+    // Close all modals
+    function closeAllModals() {
+      document.querySelectorAll('.modal').forEach(modal => {
+        modal.classList.remove('current');
+      });
+      // Hiding .container-qr by setting its display to 'none'
+      const containerQr = document.querySelector('.container-qr');
+      if (containerQr) {
+        containerQr.style.display = 'none';
+      }
+    }
 
     // Add event listeners to modal backgrounds to close on click, unless .modal-content is clicked
     document.querySelectorAll('.modal').forEach(modal => {
@@ -377,63 +380,62 @@
 
 
     let base_url = `https://unsu.com/api/resolver`;
-    if (document.location.host.substring(0,4) === '127.')
-    base_url = `http://127.0.0.1:3334`;
-        // Set ENS
-        function setAddress()
-        {
-            // Get the user-provided name and trim whitespace
-            let name = document.getElementById('iName').value.trim();
-            
-            // Automatically append ".unsu.eth" to the name
-            name += ".unsu.eth"; // This appends ".unsu.eth" to the user input
+    if (document.location.host.substring(0, 4) === '127.') {
+      base_url = `http://127.0.0.1:3334`;
+    }
 
-            const addr = wallet.address; // Use the global wallet address
+    // Set ENS
+    function setAddress() {
+      // Get the user-provided name and trim whitespace
+      let name = document.getElementById('iName').value.trim();
 
-            if (!name.endsWith(".unsu.eth"))
-            {
-                alert('Invalid name. Please try again.');
-                return;
-            }
+      // Automatically append ".unsu.eth" to the name
+      name += ".unsu.eth"; // This appends ".unsu.eth" to the user input
 
-            if (!addr.match("^0x[0-9a-fA-F]{40}$"))
-            {
-                alert('Invalid address. Please try again.');
-                return;
-            }
+      const addr = wallet.address; // Use the global wallet address
 
-            fetch(`${base_url}/${name}/${addr}`, {
-                method: 'POST',
-                headers: {'Access-Control-Allow-Origin':'*'}
-            })
-            .then(response => response.json())
-            .then(data => {
-                alert('Success: Address set.');
-                console.log('Success:', data);
-            })
-            .catch((error) => {
-                alert(`Error: ${error}`);
-                console.error('Error:', error);
-            });
-        }
+      if (!name.endsWith(".unsu.eth")) {
+        alert('Invalid name. Please try again.');
+        return;
+      }
 
-    function resolveAddressName(addr)
-    {
-      fetch(`${base_url}/name/${addr}`,
-        {headers: {'Access-Control-Allow-Origin':'*'}}
-      )
-      .then(response => response.json())
-      .then(data => {
-        if(_empty(data) || data.name === '')
-          ensName = '';
-        else
-          ensName = data.name;
-        console.log(`info: resolved ${addr} -> ${ensName}`);
+      if (!addr.match("^0x[0-9a-fA-F]{40}$")) {
+        alert('Invalid address. Please try again.');
+        return;
+      }
+
+      fetch(`${base_url}/${name}/${addr}`, {
+        method: 'POST',
+        headers: { 'Access-Control-Allow-Origin': '*' }
       })
-      .catch((error) => {
-        console.error('Error:', error);
-      });
+        .then(response => response.json())
+        .then(data => {
+          alert('Success: Address set.');
+          console.log('Success:', data);
+        })
+        .catch((error) => {
+          alert(`Error: ${error}`);
+          console.error('Error:', error);
+        });
+    }
+
+    function resolveAddressName(addr) {
+      fetch(`${base_url}/name/${addr}`,
+        { headers: { 'Access-Control-Allow-Origin': '*' } }
+      )
+        .then(response => response.json())
+        .then(data => {
+          if (_empty(data) || data.name === '')
+            ensName = '';
+          else
+            ensName = data.name;
+          console.log(`info: resolved ${addr} -> ${ensName}`);
+        })
+        .catch((error) => {
+          console.error('Error:', error);
+        });
     }
   </script>
 </body>
+
 </html>
