@@ -42,6 +42,7 @@
 
       <p class="subheader">Provider:</p>
       <div id="details-provider"></div>
+      <div id="provider-selector"></div>
 
       <button id="send-wallet">Send wallet</button>
     </div>
@@ -125,8 +126,19 @@
     let provider;
     
     function setProvider(index) {
-      provider = new ethers.providers.JsonRpcProvider(rpcConfigs[index].url);
-      document.getElementById('details-provider').textContent = rpcConfigs[index].name;
+      const rpcConfig = rpcConfigs[index]
+      
+      if (rpcConfig.name == 'Ethereum') {
+        provider = new ethers.providers.JsonRpcProvider(rpcConfig.url, {
+          name: 'sepolia',
+          chainId: 11155111,
+          ensAddress: '0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e',
+        });
+      } else {
+        provider = new ethers.providers.JsonRpcProvider(rpcConfig.url)
+      }
+
+      document.getElementById('details-provider').textContent = rpcConfig.name;
     }
     setProvider(0)
 
