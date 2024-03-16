@@ -143,7 +143,7 @@
                 const price = prices[i];
                 const balance = balances[i];
                 walletBalance += price * balance;
-                document.getElementById('walletAssets').innerHTML += `<div class="row-asset"><img src="${asset.icon}" alt="${asset.name} Icon"> <p>${asset.name}: ${balance} ${asset.symbol} ($${(price * balance).toFixed(2)})</p></div>`;
+                document.getElementById('walletAssets').innerHTML += `<div class="asset-row"><div class="asset-left"><img src="${asset.icon}" alt="${asset.name} Icon"><div><p class="asset-name">${asset.name}</p> <p class="asset-balance">${balance} ${asset.symbol}</p></div></div><p>$${(price * balance).toFixed(2)}</p></div>`;
             }
             document.getElementById('walletBalance').innerHTML = `<p class="details-balance">${walletBalance} $</p> <p class="subheader">Balance</p `
 
