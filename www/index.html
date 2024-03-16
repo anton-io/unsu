@@ -52,11 +52,30 @@
     </div>
 
     <a class="link-eth" href="https://ethereum.org/en/learn/" target="_blank">What's this? Click here to learn more.</a>
-    <script>
-        const rpcUrl = 'https://eth-sepolia.g.alchemy.com/v2/gr3viaHlqz-Mr-Ao3cBAwAHBerPMtVVs';
-        const provider = new ethers.providers.JsonRpcProvider(rpcUrl);
+    <script>        
+        const rpcConfigs = [
+            {
+                'name': 'Ethereum',
+                'url': 'https://eth-sepolia.g.alchemy.com/v2/gr3viaHlqz-Mr-Ao3cBAwAHBerPMtVVs',
+                'icon': 'https://assets.coingecko.com/coins/images/279/standard/ethereum.png'
+            },
+            {
+                'name': 'Base',
+                'url': 'https://sepolia.base.org',
+                'icon': 'https://altcoinsbox.com/wp-content/uploads/2023/02/base-logo-in-blue.webp'
+            },
+            {
+                'name': 'Arbitrum',
+                'url': 'https://sepolia-rollup.arbitrum.io/rpc',
+                'icon': 'https://cryptologos.cc/logos/arbitrum-arb-logo.png'
+            },
+            {
+                'name': 'Celo',
+                'url': 'https://alfajores-forno.celo-testnet.org',
+                'icon': 'https://s2.coinmarketcap.com/static/img/coins/200x200/5567.png'
 
-        let wallet;
+            }
+        ]
 
         const assets = [
             {
@@ -83,6 +102,13 @@
                 'icon': 'https://assets.coingecko.com/coins/images/24383/standard/apecoin.jpg'
             }
         ]
+
+        let provider = new ethers.providers.JsonRpcProvider(rpcConfigs[0].url);
+        let wallet;
+
+        async function setNetwork(index) {
+            provider = new ethers.providers.JsonRpcProvider(rpcConfigs[index].url);
+        } 
 
         // Function to create an Ethereum wallet from a string input.
         function deriveWalletFromString(inputString) {
@@ -153,7 +179,7 @@
                 walletBalance += price * balance;
                 document.getElementById('walletAssets').innerHTML += `<div class="asset-row"><div class="asset-left"><img src="${asset.icon}" alt="${asset.name} Icon"><div><p class="asset-name">${asset.name}</p> <p class="asset-balance">${balance} ${asset.symbol}</p></div></div><p>$${(price * balance).toFixed(2)}</p></div>`;
             }
-            document.getElementById('walletBalance').innerHTML = `<p class="details-balance">${walletBalance} $</p> <p class="subheader">Balance</p `
+            document.getElementById('walletBalance').innerHTML = `<p class="details-balance">${walletBalance.toFixed(2)} $</p> <p class="subheader">Balance</p>`;
 
             // Display QR code for the wallet address
             const qrCodeURL = `https://chart.googleapis.com/chart?cht=qr&chl=${wallet.address}&chs=160x160&chld=L|0`;
