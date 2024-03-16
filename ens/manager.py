@@ -40,8 +40,9 @@ def route_get_ens_name(domain):
             'addresses': {60: addr},
         }
     except:
-        app.logger.warning(f"could not resolve name for: {domain}")
+        addr = '<not set>'
         jdata = {}
+        app.logger.warning(f"could not resolve name for: {domain}")
 
     app.logger.warning(f"served: {domain} => {addr}")
     return jsonify(jdata)
