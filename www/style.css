@@ -267,10 +267,16 @@ button:hover {
 
 /* Receive */
 
+#walletQRCode {
+    display: flex;
+    justify-content: center;
+    margin: 25px 0;
+}
+
 #walletQRCode img {
     border-radius: 10px;
     border: 2px solid black;
-    width: 100%;
+    width: 200px;
 }
 
 /* Share page */
