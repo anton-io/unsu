@@ -265,19 +265,35 @@ body.share {
 
 /* Assets */
 
-.row-asset {
+.asset-row {
     display: flex;
+    justify-content: space-between;
+    align-items: center;
     border-radius: 12px;
-    padding: 7px;
+    padding: 10px 20px 10px 10px;
     outline: none;
     background-color: var(--white);
     box-shadow: rgba(9, 30, 66, 0.1) 0px 1px 1px, rgba(9, 30, 66, .1) 0px 0px 1px 1px;
     margin-bottom: 10px;
 }
 
-.row-asset img {
+.asset-left {
+    display: flex;
+    align-items: center
+    ;
+}
+
+.asset-row img {
     border-radius: 50%;
     width: 50px;
     border: 2px solid var(--light-gray);
     margin-right: 10px;
+}
+
+.asset-row p {
+    margin: 5px 0;
+}
+
+.asset-balance {
+    opacity: .5;
 }
