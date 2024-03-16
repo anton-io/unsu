@@ -121,8 +121,8 @@ button:hover {
     width: calc(50% - 5px);
 }
 
-.details-address,
-.details-key {
+#details-address,
+#details-key {
     text-wrap: wrap;
     width: 100%;
     line-break: anywhere;
