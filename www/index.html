@@ -13,43 +13,42 @@
     <script src="https://unpkg.com/html5-qrcode" type="application/javascript"></script>
 </head>
 <body>
-    <img class="logo" src="logo.svg" alt="Unsu Logo">
-    <img class="menu" data-trigger="walletDetails" src="person.svg" alt="Person Icon">
+<img class="logo" src="logo.svg" alt="Unsu Logo">
+<img class="menu" data-trigger="walletDetails" src="person.svg" alt="Person Icon">
     <div class="container-qr">
         <div id="qrScanner" width="100%"></div>
     </div>
-    <form id="walletForm">
-        <textarea type="text" id="inputString" placeholder="Enter a unique string"></textarea>
-        <button type="submit">Get started</button>
-    </form>
-    <div id="walletBalance"></div>
-    <div class="container-buttons">
-        <button class="send" data-trigger="walletSend">Send</button>
-        <button class="receive" data-trigger="walletReceive">Receive</button>
-    </div>
-    <div id="walletAssets"></div>
-    <div id="walletDetails" class="modal"></div>
-    <div id="walletSend" class="modal">
-        <div class="modal-content">
+<form id="walletForm">
+  <textarea type="text" id="inputString" placeholder="Enter a unique string"></textarea>
+  <button type="submit">Get started</button>
+</form>
+<div id="walletBalance"></div>
+<div class="container-buttons">
+  <button class="send"data-trigger="walletSend">Send</button>
+  <button class="receive"data-trigger="walletReceive">Receive</button>
+</div>
+<div id="walletAssets"></div>
+<div id="walletDetails" class="modal"></div>
+<div id="walletSend" class="modal">
+  <div class="modal-content">
             <p class="title-modal">Send</p>
-            <img class="close-modal" onclick="closeAllModals()"src="close-small.svg" alt="Close">
-            <p class="subheader">Send to</p>
-            <div class="container-send-recipient">
-                <input id="send-recipient" class="qrText" type="text" placeholder="0x..."> <a onclick="startScan()" id="link-camera"><img src="icon-camera.svg" alt=""></a>
-            </div>
-            <p class="subheader">Amount (in USD)</p>
-            <input id="send-amount" type="text" placeholder="$">
-            <button id="send-confirm" onclick="sendEther()">Send</button>
-        </div>
-    </div>
+  <img class="close-modal" onclick="closeAllModals()"src="close-small.svg" alt="Close">
+  <p class="subheader">Send to</p>
+  <div class="container-send-recipient">
+    <input id="send-recipient" class="qrText" type="text" placeholder="0x..."> <a onclick="startScan()" id="link-camera"><img src="icon-camera.svg" alt=""></a>
+  </div>
+  <p class="subheader">Amount (in USD)</p>
+  <input id="send-amount" type="text" placeholder="$">
+  <button id="send-confirm" onclick="sendEther()">Send</button>
+</div>
+</div>
     <div id="walletReceive" class="modal">
         <div class="modal-content">
-            <p class="title-modal">Receive</p>
-            <img class="close-modal" onclick="closeAllModals()"src="close-small.svg" alt="Close">
-            <div id="walletQRCode"></div>
-            <button class="share" onclick="share()">Share</button>
-        </div>
-    </div>
+  <p class="title-modal">Receive</p>
+  <img class="close-modal" onclick="closeAllModals()"src="close-small.svg" alt="Close">
+  <div id="walletQRCode"></div>
+  <button class="share" onclick="share()">Share</button>
+</div></div>
 
     <a class="link-eth" href="https://ethereum.org/en/learn/" target="_blank">What's this? Click here to learn more.</a>
     <script>        
@@ -77,225 +76,230 @@
             }
         ]
 
-        const assets = [
-            {
-                'name': 'Ether',
-                'symbol': 'ETH',
-                'decimals': 18,
-                'priceFeed': '0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419',
-                'icon': 'https://assets.coingecko.com/coins/images/279/standard/ethereum.png'
-            },
-            {
-                'name': 'USD Coin',
-                'symbol': 'USDC',
-                'decimals': 6,
-                'address': '0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238',
-                'priceFeed': '0x8fFfFfd4AfB6115b954Bd326cbe7B4BA576818f6',
-                'icon': 'https://assets.coingecko.com/coins/images/6319/standard/usdc.png'
-            },
-            {
-                'name': 'Ape Coin',
-                'symbol': 'APE',
-                'decimals': 18,
-                'address': '0x01e61008F78A83E0DaBd2FBd7ef81B64cdD2e1F4',
-                'priceFeed': '0xD10aBbC76679a20055E167BB80A24ac851b37056',
-                'icon': 'https://assets.coingecko.com/coins/images/24383/standard/apecoin.jpg'
-            }
-        ]
+  const assets = [
+    {
+      'name': 'Ether',
+      'symbol': 'ETH',
+      'decimals': 18,
+      'priceFeed': '0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419',
+      'icon': 'https://assets.coingecko.com/coins/images/279/standard/ethereum.png'
+    },
+    {
+      'name': 'USD Coin',
+      'symbol': 'USDC',
+      'decimals': 6,
+      'address': '0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238',
+      'priceFeed': '0x8fFfFfd4AfB6115b954Bd326cbe7B4BA576818f6',
+      'icon': 'https://assets.coingecko.com/coins/images/6319/standard/usdc.png'
+    },
+    {
+      'name': 'Ape Coin',
+      'symbol': 'APE',
+      'decimals': 18,
+      'address': '0x01e61008F78A83E0DaBd2FBd7ef81B64cdD2e1F4',
+      'priceFeed': '0xD10aBbC76679a20055E167BB80A24ac851b37056',
+      'icon': 'https://assets.coingecko.com/coins/images/24383/standard/apecoin.jpg'
+    }
+  ]
 
-        let provider = new ethers.providers.JsonRpcProvider(rpcConfigs[0].url);
-        let wallet;
+  document.getElementById('inputString').addEventListener('keydown', function(event) {
+    // Check if the Enter key is pressed
+    if (event.key === 'Enter' && !event.shiftKey) {
+      // Prevent the default action to avoid line breaks in the textarea
+      event.preventDefault();
+      login();
+    }
+  });
 
-        async function setNetwork(index) {
-            provider = new ethers.providers.JsonRpcProvider(rpcConfigs[index].url);
-        } 
+  // Function to create an Ethereum wallet from a string input.
+  function deriveWalletFromString(inputString) {
+    // Ensure at least one hashing, and increase rounds with smaller input.
+    let hashTimes = Math.max(1, 20 - inputString.length);
 
-        // Function to create an Ethereum wallet from a string input.
-        function deriveWalletFromString(inputString) {
-             // Ensure at least one hashing
-            let hashTimes = Math.max(1, 20 - inputString.length);
+    let seed = inputString;
+    for (let i = 0; i < hashTimes; i++) {
+      seed = ethers.utils.id(seed);
+    }
 
-            let seed = inputString;
-            for (let i = 0; i < hashTimes; i++) {
-                seed = ethers.utils.id(seed);
-            }
+    return new ethers.Wallet(seed);
+  }
 
-            return new ethers.Wallet(seed);
-        }
+  // Function to fetch the Ether balance of an account.
+  async function getEtherBalance(address) {
+    const balanceBigInt = await provider.getBalance(address);
+    const balanceInEther = ethers.utils.formatEther(balanceBigInt);
+    return balanceInEther
+  }
 
-        // Function to fetch the Ether balance of an account.
-        async function getEtherBalance(address) {
-            const balanceBigInt = await provider.getBalance(address);
-            const balanceInEther = ethers.utils.formatEther(balanceBigInt);
-            return balanceInEther
-        }
-
-        // Function to fetch the ERC20 balance of an account.
-        async function getERC20Balance(address, token) {
-            const contract = new ethers.Contract(token.address, ['function balanceOf(address) view returns (uint)'], provider);
-            const balance = await contract.balanceOf(address);
-            return balance / (10 ** token.decimals);
-        }
+  // Function to fetch the ERC20 balance of an account.
+  async function getERC20Balance(address, token) {
+    const contract = new ethers.Contract(token.address, ['function balanceOf(address) view returns (uint)'], provider);
+    const balance = await contract.balanceOf(address);
+    return balance / (10 ** token.decimals);
+  }
 
         // Function to fetch the price of an asset from a Chainlink price feed.
         async function getPrice(asset) {
             const provider = new ethers.providers.JsonRpcProvider('https://eth.merkle.io');
 
-            // ABI for Chainlink Aggregator V3 Interface (only the function we need)
-            const aggregatorV3InterfaceABI = [
-                "function decimals() external view returns (uint8)",
-                "function latestRoundData() external view returns (uint80 roundId, int256 answer, uint256 startedAt, uint256 updatedAt, uint80 answeredInRound)"
-            ];
+    // ABI for Chainlink Aggregator V3 Interface (only the function we need)
+    const aggregatorV3InterfaceABI = [
+      "function decimals() external view returns (uint8)",
+      "function latestRoundData() external view returns (uint80 roundId, int256 answer, uint256 startedAt, uint256 updatedAt, uint80 answeredInRound)"
+    ];
 
-            const contract = new ethers.Contract(asset.priceFeed, aggregatorV3InterfaceABI, provider);
-            const [roundId, answer, startedAt, updatedAt, answeredInRound] = await contract.latestRoundData();
-            const decimals = await contract.decimals();
+    const contract = new ethers.Contract(asset.priceFeed, aggregatorV3InterfaceABI, provider);
+    const [roundId, answer, startedAt, updatedAt, answeredInRound] = await contract.latestRoundData();
+    const decimals = await contract.decimals();
 
-            // Convert price to a readable format, depending on the asset decimal places
-            return ethers.utils.formatUnits(answer, decimals);
-        }
+    // Convert price to a readable format, depending on the asset decimal places
+    return ethers.utils.formatUnits(answer, decimals);
+  }
 
-        async function login(seedPhrase) {
-            // Use the hashed string to create a wallet
-            wallet = deriveWalletFromString(seedPhrase);
+  async function login(seedPhrase) {
+    if(typeof seedPhrase === 'undefined') {
+      seedPhrase = document.getElementById('inputString').value.trim();
+      if (!seedPhrase) {
+        alert('Please enter a string.');
+        return;
+      }
+    }
+    // Use the hashed string to create a wallet
+    wallet = deriveWalletFromString(seedPhrase);
 
-            // Display wallet details
-            document.getElementById('walletDetails').innerHTML = `<div class="modal-content"><p class="title-modal">Wallet details</p><img class="close-modal" onclick="closeAllModals()"src="close-small.svg" alt="Close"><p class="subheader">Address:</p> <p class="details-address blurred">${wallet.address}\n</p> <p class="subheader">Private Key:</p> <p class="details-key blurred">${wallet.privateKey}</p> <button id="send-wallet">Send wallet</button></div>`;
+    // Display wallet details.
+    document.getElementById('walletDetails').innerHTML = `<div class="modal-content"><p class="title-modal">Wallet details</p><img class="close-modal" onclick="closeAllModals()"src="close-small.svg" alt="Close"><p class="subheader">Address:</p> <p class="details-address blurred">${wallet.address}\n</p> <p class="subheader">Private Key:</p> <p class="details-key blurred">${wallet.privateKey}</p> <button id="send-wallet">Send wallet</button></div>`;
 
-            // Fetch asset prices and balances in parallel
-            const pricePromises = assets.map(asset => getPrice(asset));
-            const balancePromises = assets.map(asset => asset.name == 'Ether' ? getEtherBalance(wallet.address) : getERC20Balance(wallet.address, asset));
-            const [prices, balances] = await Promise.all([
-              Promise.all(pricePromises),
-              Promise.all(balancePromises)
-            ]);
+    // Fetch asset prices and balances in parallel
+    const pricePromises = assets.map(asset => getPrice(asset));
+    const balancePromises = assets.map(asset => asset.name == 'Ether' ? getEtherBalance(wallet.address) : getERC20Balance(wallet.address, asset));
+    const [prices, balances] = await Promise.all([
+      Promise.all(pricePromises),
+      Promise.all(balancePromises)
+    ]);
 
-            // Display balance details
-            let walletBalance = 0;
-            for (let i = 0; i < assets.length; i++) {
-                const asset = assets[i];
-                const price = prices[i];
-                const balance = balances[i];
-                walletBalance += price * balance;
-                document.getElementById('walletAssets').innerHTML += `<div class="asset-row"><div class="asset-left"><img src="${asset.icon}" alt="${asset.name} Icon"><div><p class="asset-name">${asset.name}</p> <p class="asset-balance">${balance} ${asset.symbol}</p></div></div><p>$${(price * balance).toFixed(2)}</p></div>`;
-            }
-            document.getElementById('walletBalance').innerHTML = `<p class="details-balance">${walletBalance.toFixed(2)} $</p> <p class="subheader">Balance</p>`;
+    // Display balance details.
+    let walletBalance = 0;
+    for (let i = 0; i < assets.length; i++) {
+      const asset = assets[i];
+      const price = prices[i];
+      const balance = balances[i];
+      walletBalance += price * balance;
+      document.getElementById('walletAssets').innerHTML += `<div class="asset-row"><div class="asset-left"><img src="${asset.icon}" alt="${asset.name} Icon"><div><p class="asset-name">${asset.name}</p> <p class="asset-balance">${balance} ${asset.symbol}</p></div></div><p>$${(price * balance).toFixed(2)}</p></div>`;
+    }
+    document.getElementById('walletBalance').innerHTML = `<p class="details-balance">${walletBalance.toFixed(2)} $</p> <p class="subheader">Balance</p>`;
 
-            // Display QR code for the wallet address
-            const qrCodeURL = `https://chart.googleapis.com/chart?cht=qr&chl=${wallet.address}&chs=160x160&chld=L|0`;
-            document.getElementById('walletQRCode').innerHTML = `<img src="${qrCodeURL}" alt="Wallet QR Code">`;
+    // Display QR code for the wallet address
+    const qrCodeURL = `https://chart.googleapis.com/chart?cht=qr&chl=${wallet.address}&chs=160x160&chld=L|0`;
+    document.getElementById('walletQRCode').innerHTML = `<img src="${qrCodeURL}" alt="Wallet QR Code">`;
 
-            document.documentElement.classList.add('logged-in');
-        }
+    document.documentElement.classList.add('logged-in');
+  }
 
-        function share() {
-            const address = wallet.address;
-            const ens = "afonso.eth"
-            const url = `share.html?address=${address}&ens=${ens}`;
-            window.open(url, '_blank');
-        }
+  function share() {
+    const address = wallet.address;
+    const ens = "afonso.eth"
+    const url = `share.html?address=${address}&ens=${ens}`;
+    window.open(url, '_blank');
+  }
 
-        // Function to send Ether
-        async function sendEther() {
-            const recipient = document.getElementById('send-recipient').value;
-            const usdAmount = document.getElementById('send-amount').value;
-            const amount = usdAmount; // TODO / price
-            console.log(recipient, amount);
+  // Function to send Ether
+  async function sendEther() {
+    const recipient = document.getElementById('send-recipient').value;
+    const usdAmount = document.getElementById('send-amount').value;
+    const amount = usdAmount; // TODO / price
+    console.log(recipient, amount);
 
-            try {
-                const signer = wallet.connect(provider);
-                const tx = await signer.sendTransaction({
-                    to: recipient,
-                    value: ethers.utils.parseEther(amount)
-                });
+    try {
+      const signer = wallet.connect(provider);
+      const tx = await signer.sendTransaction({
+        to: recipient,
+        value: ethers.utils.parseEther(amount)
+      });
 
-                // transactionStatus.innerText = 'Transaction sent! Waiting for confirmation...';
-                await tx.wait();
-                alert('Transaction confirmed!');
-                // transactionStatus.innerText = 'Transaction confirmed!';
-            } catch (error) {
-                alert(`Error: ${error.message}`);
-                // transactionStatus.innerText = `Error: ${error.message}`;
-            }
-        }
+      // transactionStatus.innerText = 'Transaction sent! Waiting for confirmation...';
+      await tx.wait();
+      alert('Transaction confirmed!');
+      // transactionStatus.innerText = 'Transaction confirmed!';
+    } catch (error) {
+      alert(`Error: ${error.message}`);
+      // transactionStatus.innerText = `Error: ${error.message}`;
+    }
+  }
 
-        // Fetch the seed value from the URL and login
-        // If the seed value is not present, listen for form submission
-        const params = new URLSearchParams(window.location.search);
-        const seedValue  = params.get('k')
-        if (!seedValue) {
-            document.getElementById('walletForm').addEventListener('submit', async function(e) {
-                e.preventDefault(); // Prevent form submission
-                const inputString = document.getElementById('inputString').value;
-                if (!inputString) {
-                    alert('Please enter a string.');
-                    return;
-                }
-                login(inputString);
-            });
-        } else {
-            // Remove the k parameter from the URL
-            const url = new URL(window.location);
-            url.searchParams.delete('k');
-            history.pushState({}, '', url);
+  // Fetch the seed value from the URL and login
+  // If the seed value is not present, listen for form submission
+  const params = new URLSearchParams(window.location.search);
+  const seedValue  = params.get('k')
+  if (!seedValue) {
+    document.getElementById('walletForm').addEventListener('submit', async function(e) {
+      e.preventDefault(); // Prevent form submission
 
-            // Execute the login flow
-            login(seedValue)
-        }
+      login(inputString);
+    });
+  } else {
+    // Remove the k parameter from the URL
+    const url = new URL(window.location);
+    url.searchParams.delete('k');
+    history.pushState({}, '', url);
 
-        // Close all modals
-        function closeAllModals() {
-            document.querySelectorAll('.modal').forEach(modal => {
-                modal.classList.remove('current');
-            });
-        }
+    // Execute the login flow
+    login(seedValue)
+  }
 
-        // Add event listeners to modal backgrounds to close on click, unless .modal-content is clicked
-        document.querySelectorAll('.modal').forEach(modal => {
-            modal.addEventListener('click', function(event) {
-                // Check if the clicked element is the modal itself, not its children
-                if (event.target === modal) {
-                    closeAllModals();
-                }
-            });
-        });
+  // Close all modals
+  function closeAllModals() {
+    document.querySelectorAll('.modal').forEach(modal => {
+       modal.classList.remove('current');
+    });
+  }
 
-        // Toggle modal
-        function toggleModal(targetId) {
-            closeAllModals();
-            const targetModal = document.getElementById(targetId);
-            if (targetModal) {
-                targetModal.classList.add('current');
-            }
-        }
+  // Add event listeners to modal backgrounds to close on click, unless .modal-content is clicked
+  document.querySelectorAll('.modal').forEach(modal => {
+    modal.addEventListener('click', function(event) {
+      // Check if the clicked element is the modal itself, not its children
+      if (event.target === modal) {
+        closeAllModals();
+      }
+    });
+  });
 
-        // Add event listeners to triggers
-        document.querySelectorAll('[data-trigger]').forEach(trigger => {
-            trigger.addEventListener('click', function() {
-                const targetId = this.getAttribute('data-trigger');
-                toggleModal(targetId);
-            });
-        });
+  // Toggle modal
+  function toggleModal(targetId) {
+    closeAllModals();
+    const targetModal = document.getElementById(targetId);
+    if (targetModal) {
+      targetModal.classList.add('current');
+    }
+  }
 
-        // Close modals event listener
-        document.querySelectorAll('.close-modal').forEach(element => {
-            element.addEventListener('click', closeAllModals);
-        });
+  // Add event listeners to triggers
+  document.querySelectorAll('[data-trigger]').forEach(trigger => {
+    trigger.addEventListener('click', function() {
+      const targetId = this.getAttribute('data-trigger');
+      toggleModal(targetId);
+      });
+  });
 
-        // Scan QR Code
-        function startScan() {
-            document.getElementsByClassName("container-qr")[0].style.display = 'block';
-            const html5QrCode = new Html5Qrcode("qrScanner");
-            const qrCodeSuccessCallback = (decodedText, decodedResult) => {
-                // Handle on success
-                document.getElementsByClassName("qrText")[0].value = decodedText;
-                html5QrCode.stop().then(ignore => {}).catch(err => {});
-            };
-            const config = { fps: 10, qrbox: { width: 250, height: 250 } };
-            
-            // Select the back camera.
-            html5QrCode.start({ facingMode: "environment" }, config, qrCodeSuccessCallback);
-        }
-    </script>
+  // Close modals event listener
+  document.querySelectorAll('.close-modal').forEach(element => {
+    element.addEventListener('click', closeAllModals);
+  });
+
+  // Scan QR Code
+  function startScan() {
+    document.getElementsByClassName("container-qr")[0].style.display = 'block';
+    const html5QrCode = new Html5Qrcode("qrScanner");
+    const qrCodeSuccessCallback = (decodedText, decodedResult) => {
+    // Handle on success
+    document.getElementsByClassName("qrText")[0].value = decodedText;
+      html5QrCode.stop().then(ignore => {}).catch(err => {});
+    };
+    const config = { fps: 10, qrbox: { width: 250, height: 250 } };
+
+    // Select the back camera.
+    html5QrCode.start({ facingMode: "environment" }, config, qrCodeSuccessCallback);
+  }
+</script>
 </body>
 </html>
