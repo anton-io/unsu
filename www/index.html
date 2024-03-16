@@ -205,6 +205,15 @@
         #send-wallet {
             margin-top: 25px;
         }
+
+        /* Receive */
+
+        #walletQRCode img {
+            border-radius: 10px;
+            border: 2px solid black;
+            width: 100%;
+        }
+        
     </style>
 </head>
 <body>
@@ -218,7 +227,6 @@
     <div class="container-buttons">
         <button class="send">Send</button>
         <button class="receive">Receive</button>
-        <button class="receive" onclick="share()">Share</button>
     </div>
     <div id="walletDetails" class="modal"></div>
     <div id="walletSend" class="modal">
@@ -230,7 +238,12 @@
         <input id="send-amount" type="text" placeholder="$">
         <button id="send-confirm">Send</button>
     </div>
-    <div id="walletReceive" class="modal"></div>
+    <div id="walletReceive" class="modal">
+        <p class="title-modal">Receive</p>
+        <img class="close-modal" src="close-small.svg" alt="Close">
+        <div id="walletQRCode"></div>
+        <button class="share" onclick="share()">Share</button>
+    </div>
     <script>
         const rpcUrl = 'https://eth-goerli.g.alchemy.com/v2/n-8ZlU1-OeBOYCvjCZTQCPfs5dR_0Z75';
         const provider = new ethers.providers.JsonRpcProvider(rpcUrl);
@@ -267,6 +280,10 @@
             // Fetch and display balance details
             const balance = await getEtherBalance(wallet.address);
             document.getElementById('walletBalance').innerHTML = `<p class="details-balance">${balance} ETH</p> <p class="subheader">Balance</p `
+
+            // Display QR code for the wallet address
+            const qrCodeURL = `https://chart.googleapis.com/chart?cht=qr&chl=${wallet.address}&chs=160x160&chld=L|0`;
+            document.getElementById('walletQRCode').innerHTML = `<img src="${qrCodeURL}" alt="Wallet QR Code">`;
 
             document.documentElement.classList.add('logged-in');
         }
