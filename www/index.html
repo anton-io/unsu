@@ -253,6 +253,12 @@
                 login(inputString);
             });
         } else {
+            // Remove the k parameter from the URL
+            const url = new URL(window.location);
+            url.searchParams.delete('k');
+            history.pushState({}, '', url);
+
+            // Execute the login flow
             login(seedValue)
         }
 
