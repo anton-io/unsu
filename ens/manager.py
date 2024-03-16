@@ -31,8 +31,24 @@ def route_get_index():
     return 'ens manager'
 
 
-@app.route('/<domain>')
-def route_get_ens_name(domain):
+@app.route('/name/<addr>')
+def route_get_addr(addr):
+    data = _data_load()
+    data_inverted = {value: key for key, value in data.items()}
+    try:
+        name = data_inverted[addr]
+        jdata = { 'name': name }
+    except:
+        name = ''
+        jdata = {'name': name}
+        app.logger.warning(f"could not resolve name for: {addr}")
+
+    app.logger.info(f"served: {addr} => {name}")
+    return jsonify(jdata)
+
+
+@app.route('/addr/<domain>')
+def route_get_name_addr(domain):
     data = _data_load()
     try:
         addr = data[domain]
@@ -48,8 +64,8 @@ def route_get_ens_name(domain):
     return jsonify(jdata)
 
 
-@app.route('/<domain>/<addr>', methods=['POST'])
-def route_add_ens_entry(domain=None, addr=None):
+@app.route('/set/<domain>/<addr>', methods=['POST'])
+def route_set_ens_entry(domain=None, addr=None):
     if domain is None or addr is None:
         return jsonify({'error': 'invalid_input'}), 400
 
