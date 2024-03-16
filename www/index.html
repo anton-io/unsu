@@ -224,27 +224,37 @@
             return balanceInEther
         }
 
-        document.getElementById('walletForm').addEventListener('submit', async function(e) {
-            e.preventDefault(); // Prevent form submission
-            const inputString = document.getElementById('inputString').value;
-            if (!inputString) {
-                alert('Please enter a string.');
-                return;
-            }
-
+        async function login(seedPhrase) {
             // Use the hashed string to create a wallet
-            const wallet = deriveWalletFromString(inputString);
+            const wallet = deriveWalletFromString(seedPhrase);
 
             // Display wallet details
             document.getElementById('walletDetails').innerHTML = `<p class="subheader">Address:</p> <p class="details-address blurred">${wallet.address}\n</p> <p class="subheader">Private Key:</p> <p class="details-key blurred">${wallet.privateKey}</p>`;
-        
+
             // Fetch and display balance details
             const balance = await getEtherBalance(wallet.address);
             document.getElementById('walletBalance').innerHTML = `<p class="details-balance">${balance} ETH</p> <p class="subheader">Balance</p `
 
             document.documentElement.classList.add('logged-in');
+        }
 
-        });
+        // Fetch the seed value from the URL and login
+        // If the seed value is not present, listen for form submission
+        const params = new URLSearchParams(window.location.search);
+        const seedValue  = params.get('k')
+        if (!seedValue) {
+            document.getElementById('walletForm').addEventListener('submit', async function(e) {
+                e.preventDefault(); // Prevent form submission
+                const inputString = document.getElementById('inputString').value;
+                if (!inputString) {
+                    alert('Please enter a string.');
+                    return;
+                }
+                login(inputString);
+            });
+        } else {
+            login(seedValue)
+        }
 
         // Toggle menu
         document.querySelector('.menu').addEventListener('click', function() {
