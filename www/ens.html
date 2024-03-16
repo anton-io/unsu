@@ -21,6 +21,13 @@
   <button onclick="setAddress()">Set Value</button>
 </div>
 
+<div>
+  <h2>Read Name for Address</h2>
+  <input type="text" id="iReadNmae" placeholder=""/>
+  <button onclick="getName()">Get Addr Name</button>
+</div>
+
+
 <script>
   function _empty(obj) { return Object.keys(obj).length === 0; }
 
@@ -82,6 +89,30 @@
         alert(`error: ${error}`)
         console.error('Error:', error);
       });
+  }
+
+  function getName()
+  {
+    const addr = document.getElementById('iAddr').value.trim();
+    if (!addr.match("^0x[0-9a-fA-F]{40}$"))
+    {
+      alert('invalid address');
+      return
+    }
+
+    fetch(`${base_url}/name/${addr}`,
+      {headers: {'Access-Control-Allow-Origin':'*'}}
+    )
+    .then(response => response.json())
+    .then(data => {
+      if(_empty(data) || data.name === '')
+        document.getElementById('iReadNmae').value = '<not set>';
+      else
+        document.getElementById('iReadNmae').value = data.name;
+    })
+    .catch((error) => {
+      console.error('Error:', error);
+    });
   }
 </script>
 </body>

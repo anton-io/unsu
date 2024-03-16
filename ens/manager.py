@@ -33,6 +33,7 @@ def route_get_index():
 
 @app.route('/name/<addr>')
 def route_get_addr(addr):
+    # Get name for given address.
     data = _data_load()
     data_inverted = {value: key for key, value in data.items()}
     try:
@@ -47,20 +48,21 @@ def route_get_addr(addr):
     return jsonify(jdata)
 
 
-@app.route('/addr/<domain>')
-def route_get_name_addr(domain):
+@app.route('/addr/<name>')
+def route_get_name_addr(name):
+    # Get address for given name.
     data = _data_load()
     try:
-        addr = data[domain]
+        addr = data[name]
         jdata = {
             'addresses': {60: addr},'text': {}
         }
     except:
         addr = '<not set>'
         jdata = {}
-        app.logger.warning(f"could not resolve name for: {domain}")
+        app.logger.warning(f"could not resolve name: {name}")
 
-    app.logger.info(f"served: {domain} => {addr}")
+    app.logger.info(f"served: {name} => {addr}")
     return jsonify(jdata)
 
 
