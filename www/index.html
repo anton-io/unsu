@@ -124,6 +124,13 @@
 
     let wallet;
     let provider;
+
+    function _empty(obj) { return Object.keys(obj).length === 0; }
+
+    let base_url = `https://unsu.com/api/resolver`;
+    if (document.location.host.substring(0,4) === '127.')
+      base_url = `http://127.0.0.1:3334`;
+
     
     function setProvider(index) {
       provider = new ethers.providers.JsonRpcProvider(rpcConfigs[index].url);
