@@ -71,6 +71,7 @@
   </div>
   <a class="link-eth" href="https://ethereum.org/en/learn/" target="_blank">What's this? Click here to learn more.</a>
   <script>
+    let ensName = '';
     const rpcConfigs = [
       {
         'name': 'Ethereum',
@@ -193,10 +194,11 @@
       }
       // Use the hashed string to create a wallet
       wallet = deriveWalletFromString(seedPhrase);
+      resolveAddressName(wallet.address);
 
       // Display wallet details.
-      document.getElementById('details-address').textContent = wallet.address
-      document.getElementById('details-key').textContent = wallet.privateKey
+      document.getElementById('details-address').textContent = wallet.address;
+      document.getElementById('details-key').textContent = wallet.privateKey;
 
       // Fetch asset prices and balances in parallel
       const pricePromises = assets.map(asset => getPrice(asset));
@@ -326,6 +328,24 @@
 
       // Select the back camera.
       html5QrCode.start({ facingMode: "environment" }, config, qrCodeSuccessCallback);
+    }
+
+    function resolveAddressName(addr)
+    {
+      fetch(`${base_url}/name/${addr}`,
+        {headers: {'Access-Control-Allow-Origin':'*'}}
+      )
+      .then(response => response.json())
+      .then(data => {
+        if(_empty(data) || data.name === '')
+          ensName = '';
+        else
+          ensName = data.name;
+        console.log(`info: resolved ${addr} -> ${ensName}`);
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
     }
   </script>
 </body>
