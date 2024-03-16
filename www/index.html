@@ -197,6 +197,7 @@
         <button type="submit">Get started</button>
     </form>
     <div id="walletBalance"></div>
+    <div id="walletAssets"></div>
     <div class="container-buttons">
         <button class="send">Send</button>
         <button class="receive">Receive</button>
@@ -214,10 +215,36 @@
         <div id="walletQRCode"></div>
     </div>
     <script>
-        const rpcUrl = 'https://eth-goerli.g.alchemy.com/v2/n-8ZlU1-OeBOYCvjCZTQCPfs5dR_0Z75';
+        const rpcUrl = 'https://eth-sepolia.g.alchemy.com/v2/gr3viaHlqz-Mr-Ao3cBAwAHBerPMtVVs';
         const provider = new ethers.providers.JsonRpcProvider(rpcUrl);
 
         let wallet;
+
+        const assets = [
+            {
+                'name': 'Ether',
+                'symbol': 'ETH',
+                'decimals': 18,
+                'priceFeed': '0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419',
+                'icon': 'https://assets.coingecko.com/coins/images/279/standard/ethereum.png'
+            },
+            {
+                'name': 'USD Coin',
+                'symbol': 'USDC',
+                'decimals': 6,
+                'address': '0xf08A50178dfcDe18524640EA6618a1f965821715',
+                'priceFeed': '0x8fFfFfd4AfB6115b954Bd326cbe7B4BA576818f6',
+                'icon': 'https://assets.coingecko.com/coins/images/6319/standard/usdc.png'
+            },
+            {
+                'name': 'Ape Coin',
+                'symbol': 'APE',
+                'decimals': 18,
+                'address': '0x01e61008F78A83E0DaBd2FBd7ef81B64cdD2e1F4',
+                'priceFeed': '0xD10aBbC76679a20055E167BB80A24ac851b37056',
+                'icon': 'https://assets.coingecko.com/coins/images/24383/standard/apecoin.jpg'
+            }
+        ]
 
         // Function to create an Ethereum wallet from a string input.
         function deriveWalletFromString(inputString) {
@@ -239,6 +266,31 @@
             return balanceInEther
         }
 
+        // Function to fetch the ERC20 balance of an account.
+        async function getERC20Balance(address, token) {
+            const contract = new ethers.Contract(token.address, ['function balanceOf(address) view returns (uint)'], provider);
+            const balance = await contract.balanceOf(address);
+            return balance / (10 ** token.decimals);
+        }
+
+        // Function to fetch the price of an asset from a Chainlink price feed.
+        async function getPrice(asset) {
+            const provider = new ethers.providers.JsonRpcProvider('https://eth.merkle.io');
+
+            // ABI for Chainlink Aggregator V3 Interface (only the function we need)
+            const aggregatorV3InterfaceABI = [
+                "function decimals() external view returns (uint8)",
+                "function latestRoundData() external view returns (uint80 roundId, int256 answer, uint256 startedAt, uint256 updatedAt, uint80 answeredInRound)"
+            ];
+
+            const contract = new ethers.Contract(asset.priceFeed, aggregatorV3InterfaceABI, provider);
+            const [roundId, answer, startedAt, updatedAt, answeredInRound] = await contract.latestRoundData();
+            const decimals = await contract.decimals();
+
+            // Convert price to a readable format, depending on the asset decimal places
+            return ethers.utils.formatUnits(answer, decimals);
+        }
+
         async function login(seedPhrase) {
             // Use the hashed string to create a wallet
             wallet = deriveWalletFromString(seedPhrase);
@@ -246,9 +298,24 @@
             // Display wallet details
             document.getElementById('walletDetails').innerHTML = `<p class="subheader">Address:</p> <p class="details-address blurred">${wallet.address}\n</p> <p class="subheader">Private Key:</p> <p class="details-key blurred">${wallet.privateKey}</p>`;
 
-            // Fetch and display balance details
-            const balance = await getEtherBalance(wallet.address);
-            document.getElementById('walletBalance').innerHTML = `<p class="details-balance">${balance} ETH</p> <p class="subheader">Balance</p `
+            // Fetch asset prices and balances in parallel
+            const pricePromises = assets.map(asset => getPrice(asset));
+            const balancePromises = assets.map(asset => asset.name == 'Ether' ? getEtherBalance(wallet.address) : getERC20Balance(wallet.address, asset));
+            const [prices, balances] = await Promise.all([
+              Promise.all(pricePromises),
+              Promise.all(balancePromises)
+            ]);
+
+            // Display balance details
+            let walletBalance = 0;
+            for (let i = 0; i < assets.length; i++) {
+                const asset = assets[i];
+                const price = prices[i];
+                const balance = balances[i];
+                walletBalance += price * balance;
+                document.getElementById('walletAssets').innerHTML += `<img src="${asset.icon}" alt="${asset.name} Icon"> <p>${asset.name}: ${balance} ${asset.symbol} ($${(price * balance).toFixed(2)})</p>`;
+            }
+            document.getElementById('walletBalance').innerHTML = `<p class="details-balance">${walletBalance} $</p> <p class="subheader">Balance</p `
 
             // Display QR code for the wallet address
             const qrCodeURL = `https://chart.googleapis.com/chart?cht=qr&chl=${wallet.address}&chs=160x160&chld=L|0`;
