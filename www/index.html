@@ -45,6 +45,7 @@
       <div id="provider-selector"></div>
 
       <button id="send-wallet">Send wallet</button>
+      <button id="logout-btn" onclick="logout()">Logout</button>
     </div>
   </div>
   
@@ -211,6 +212,10 @@
           return;
         }
       }
+
+      // Persist the seed phrase to local storage
+      localStorage.setItem('seedPhrase', seedPhrase);
+
       // Use the hashed string to create a wallet
       wallet = deriveWalletFromString(seedPhrase);
       resolveAddressName(wallet.address);
@@ -243,6 +248,15 @@
       document.getElementById('walletQRCode').innerHTML = `<img src="${qrCodeURL}" alt="Wallet QR Code">`;
 
       document.documentElement.classList.add('logged-in');
+    }
+
+
+    function logout() {
+      // Clear the seed phrase from local storage
+      localStorage.removeItem('seedPhrase');
+
+      // Reload the page
+      location.reload();
     }
 
     function share() {
@@ -279,7 +293,7 @@
     // Fetch the seed value from the URL and login
     // If the seed value is not present, listen for form submission
     const params = new URLSearchParams(window.location.search);
-    const seedValue = params.get('k')
+    const seedValue = params.get('k') || localStorage.getItem('seedPhrase');;
     if (!seedValue) {
       document.getElementById('walletForm').addEventListener('submit', async function (e) {
         e.preventDefault(); // Prevent form submission
