@@ -31,14 +31,19 @@ def route_get_index():
     return 'ens manager'
 
 
-@app.route('/<name>')
-def route_get_ens_name(name):
+@app.route('/<domain>')
+def route_get_ens_name(domain):
     data = _data_load()
     try:
-        jdata = data[name]
+        addr = data[domain]
+        jdata = {
+            'addresses': {60: addr},
+        }
     except:
-        app.logger.warning(f"could not resolve name for: {name}")
+        app.logger.warning(f"could not resolve name for: {domain}")
         jdata = {}
+
+    app.logger.warning(f"served: {domain} => {addr}")
     return jsonify(jdata)
 
 
@@ -55,6 +60,7 @@ def route_add_ens_entry(domain=None, addr=None):
 
     data[domain] = addr
     _data_save()
+    app.logger.warning(f"updated: {domain} => {addr}")
     return jsonify({'updated': {'name': domain, 'addr': addr}}), 201
 
 
