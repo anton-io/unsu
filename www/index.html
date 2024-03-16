@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,7 +12,6 @@
   <script src="https://cdn.ethers.io/lib/ethers-5.6.umd.min.js" type="application/javascript"></script>
   <script src="https://unpkg.com/html5-qrcode" type="application/javascript"></script>
 </head>
-
 <body>
   <img class="logo" src="logo.svg" alt="Unsu Logo">
   <img class="menu" data-trigger="walletDetails" src="person.svg" alt="Person Icon">
@@ -130,8 +128,7 @@
     // Function to fetch the Ether balance of an account.
     async function getEtherBalance(address) {
       const balanceBigInt = await provider.getBalance(address);
-      const balanceInEther = ethers.utils.formatEther(balanceBigInt);
-      return balanceInEther
+      return ethers.utils.formatEther(balanceBigInt);
     }
 
     // Function to fetch the ERC20 balance of an account.
@@ -241,12 +238,12 @@
         login(inputString);
       });
     } else {
-      // Remove the k parameter from the URL
+      // Remove the k parameter from the URL.
       const url = new URL(window.location);
       url.searchParams.delete('k');
       history.pushState({}, '', url);
 
-      // Execute the login flow
+      // Execute the login flow.
       login(seedValue)
     }
 
@@ -305,5 +302,4 @@
     }
   </script>
 </body>
-
 </html>
