@@ -9,7 +9,7 @@
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
     <link rel="manifest" href="/site.webmanifest">
-    <script src="https://cdn.ethers.io/lib/ethers-5.2.umd.min.js" type="application/javascript"></script>
+    <script src="https://cdn.ethers.io/lib/ethers-5.6.umd.min.js" type="application/javascript"></script>
     <script src="https://unpkg.com/html5-qrcode" type="application/javascript"></script>
 </head>
 <body>
@@ -36,7 +36,7 @@
         <div id="qrScanner" width="100%"></div>
         <p class="subheader">Amount (in USD)</p>
         <input id="send-amount" type="text" placeholder="$">
-        <button id="send-confirm">Send</button>
+        <button id="send-confirm" onclick="sendEther()">Send</button>
     </div>
     <div id="walletReceive" class="modal">
         <p class="title-modal">Receive</p>
@@ -159,6 +159,30 @@
             const ens = "afonso.eth"
             const url = `share.html?address=${address}&ens=${ens}`;
             window.open(url, '_blank');
+        }
+
+        // Function to send Ether
+        async function sendEther() {
+            const recipient = document.getElementById('send-recipient').value;
+            const usdAmount = document.getElementById('send-amount').value;
+            const amount = usdAmount; // TODO / price
+            console.log(recipient, amount);
+
+            try {
+                const signer = wallet.connect(provider);
+                const tx = await signer.sendTransaction({
+                    to: recipient,
+                    value: ethers.utils.parseEther(amount)
+                });
+
+                // transactionStatus.innerText = 'Transaction sent! Waiting for confirmation...';
+                await tx.wait();
+                alert('Transaction confirmed!');
+                // transactionStatus.innerText = 'Transaction confirmed!';
+            } catch (error) {
+                alert(`Error: ${error.message}`);
+                // transactionStatus.innerText = `Error: ${error.message}`;
+            }
         }
 
         // Fetch the seed value from the URL and login
