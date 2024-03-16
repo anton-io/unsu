@@ -5,7 +5,10 @@ DIR_THIS = os.path.dirname(os.path.abspath(__file__))
 
 
 from flask import Flask
+from flask_cors import CORS
+
 app = Flask(__name__, static_folder=f"{DIR_THIS}/www")
+cors = CORS(app)
 
 
 @app.route('/')

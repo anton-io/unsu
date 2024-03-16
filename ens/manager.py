@@ -4,13 +4,14 @@ import os
 import json
 import tempfile
 from flask import Flask, jsonify
-
+from flask_cors import CORS
 
 DIR_THIS = os.path.dirname(os.path.abspath(__file__))
 FNF_DATA = f"{DIR_THIS}/data.json"
 
 data = {}
 app  = Flask(__name__)
+cors = CORS(app)
 
 
 def _data_save(fnf=FNF_DATA):
