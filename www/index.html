@@ -217,14 +217,24 @@
             login(seedValue)
         }
 
-        // Function to close all modals
+        // Close all modals
         function closeAllModals() {
             document.querySelectorAll('.modal').forEach(modal => {
                 modal.classList.remove('current');
             });
         }
 
-        // Function to toggle modal
+        // Add event listeners to modal backgrounds to close on click, unless .modal-content is clicked
+        document.querySelectorAll('.modal').forEach(modal => {
+            modal.addEventListener('click', function(event) {
+                // Check if the clicked element is the modal itself, not its children
+                if (event.target === modal) {
+                    closeAllModals();
+                }
+            });
+        });
+
+        // Toggle modal
         function toggleModal(targetId) {
             closeAllModals();
             const targetModal = document.getElementById(targetId);
@@ -238,11 +248,6 @@
             trigger.addEventListener('click', function() {
                 const targetId = this.getAttribute('data-trigger');
                 toggleModal(targetId);
-
-                // Example for changing the icon, adjust as necessary
-                if (this.tagName.toLowerCase() === 'img') { // Assuming the trigger is an <img>
-                    this.src = this.src.includes('close.svg') ? 'person.svg' : 'close.svg';
-                }
             });
         });
 
