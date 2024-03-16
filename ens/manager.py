@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import os
+import re
 import json
 import tempfile
 from flask import Flask, jsonify
@@ -44,14 +45,20 @@ def route_get_ens_name(name):
     return jsonify(jdata)
 
 
-@app.route('/<name>/<addr>', methods=['POST'])
-def route_add_ens_entry(name=None, addr=None):
-    if name is None or addr is None:
+@app.route('/<domain>/<addr>', methods=['POST'])
+def route_add_ens_entry(domain=None, addr=None):
+    if domain is None or addr is None:
         return jsonify({'error': 'invalid_input'}), 400
 
-    data[name] = addr
+    if not domain.endswith(".unsu.eth"):
+        return jsonify({'error', 'invalid domain'}), 400
+
+    if not re.match(r'0x[a-fA-F0-9]{40}', addr):
+        return jsonify({'error', 'invalid address'}), 400
+
+    data[domain] = addr
     _data_save()
-    return jsonify({'updated': {'name': name, 'addr': addr}}), 201
+    return jsonify({'updated': {'name': domain, 'addr': addr}}), 201
 
 
 if __name__ == '__main__':
