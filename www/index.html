@@ -65,6 +65,27 @@
         <input id="send-recipient" class="qrText" type="text" placeholder="0x..."> <a onclick="startScan()"
           id="link-camera"><img src="icon-camera.svg" alt=""></a>
       </div>
+      <p class="subheader">Select asset</p>
+      <div class="container-assets-horizontal">
+          <div class="asset-row">
+              <p class="asset-name">ETH</p>
+              <div class="asset-amount-value">
+                  <p class="asset-amount">5</p>
+              </div>
+          </div>
+          <div class="asset-row">
+              <p class="asset-name">USDT</p>
+              <div class="asset-amount-value">
+                  <p class="asset-amount">1000</p>
+              </div>
+          </div>
+          <div class="asset-row">
+              <p class="asset-name">USDC</p>
+              <div class="asset-amount-value">
+                  <p class="asset-amount">870</p>
+              </div>
+          </div>
+      </div>
       <p class="subheader">Amount (in USD)</p>
       <input id="send-amount" type="text" placeholder="$">
       <button id="send-confirm" onclick="sendEther()">Send</button>

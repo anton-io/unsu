@@ -276,6 +276,18 @@ input,
     z-index: 5;
 }
 
+.container-assets-horizontal {
+    display: flex;
+    margin: 0 -25px 10px -25px;
+    padding: 1px 25px;
+    overflow: auto;
+}
+
+.container-assets-horizontal .asset-row {
+    height: 50px!important;
+    margin-right: 10px;
+}
+
 /* Receive */
 
 #walletQRCode {
