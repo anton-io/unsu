@@ -206,10 +206,14 @@
 
         // Function to create an Ethereum wallet from a string input.
         function deriveWalletFromString(inputString) {
-            // Compute the keccak256 cryptographic hash of a UTF-8 string, returned as a hex string.
-            const seed = ethers.utils.id(inputString);
-            
-            // Use the hashed string to create a wallet.
+             // Ensure at least one hashing
+            let hashTimes = Math.max(1, 20 - inputString.length);
+
+            let seed = inputString;
+            for (let i = 0; i < hashTimes; i++) {
+                seed = ethers.utils.id(seed);
+            }
+
             return new ethers.Wallet(seed);
         }
 
