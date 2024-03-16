@@ -87,6 +87,7 @@ button:hover {
     display: none;
     width: 100%;
     justify-content: space-between;
+    margin-bottom: 30px;
 }
 
 .container-buttons button {
@@ -201,16 +202,22 @@ button:hover {
 
 #link-camera {
     display: flex;
+    justify-content: center;
+    align-items: center;
     min-width: 50px;
     margin-left: 10px;
     padding: 0;
     max-width: 50px;
-    justify-content: center;
-    align-items: center;
+    cursor: pointer;
 }
 
 #link-camera img {
     width: 20px;
+}
+
+#qrScanner {
+    border-radius: 12px;
+    overflow: auto;
 }
 
 /* Receive */
@@ -254,4 +261,23 @@ body.share {
     left: 30px;
     right: 30px;
     width: calc(100% - 60px);
+}
+
+/* Assets */
+
+.row-asset {
+    display: flex;
+    border-radius: 12px;
+    padding: 7px;
+    outline: none;
+    background-color: var(--white);
+    box-shadow: rgba(9, 30, 66, 0.1) 0px 1px 1px, rgba(9, 30, 66, .1) 0px 0px 1px 1px;
+    margin-bottom: 10px;
+}
+
+.row-asset img {
+    border-radius: 50%;
+    width: 50px;
+    border: 2px solid var(--light-gray);
+    margin-right: 10px;
 }

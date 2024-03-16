@@ -20,19 +20,20 @@
         <button type="submit">Get started</button>
     </form>
     <div id="walletBalance"></div>
-    <div id="walletAssets"></div>
     <div class="container-buttons">
         <button class="send">Send</button>
         <button class="receive">Receive</button>
     </div>
+    <div id="walletAssets"></div>
     <div id="walletDetails" class="modal"></div>
     <div id="walletSend" class="modal">
         <p class="title-modal">Send</p>
         <img class="close-modal" src="close-small.svg" alt="Close">
         <p class="subheader">Send to</p>
         <div class="container-send-recipient">
-            <input id="send-recipient" type="text" placeholder="0x..."> <a onclick="startScan()" id="link-camera"><img src="icon-camera.svg" alt=""></a>
+            <input id="send-recipient" class="qrText" type="text" placeholder="0x..."> <a onclick="startScan()" id="link-camera"><img src="icon-camera.svg" alt=""></a>
         </div>
+        <div id="qrScanner" width="100%"></div>
         <p class="subheader">Amount (in USD)</p>
         <input id="send-amount" type="text" placeholder="$">
         <button id="send-confirm">Send</button>
@@ -142,7 +143,7 @@
                 const price = prices[i];
                 const balance = balances[i];
                 walletBalance += price * balance;
-                document.getElementById('walletAssets').innerHTML += `<img src="${asset.icon}" alt="${asset.name} Icon"> <p>${asset.name}: ${balance} ${asset.symbol} ($${(price * balance).toFixed(2)})</p>`;
+                document.getElementById('walletAssets').innerHTML += `<div class="row-asset"><img src="${asset.icon}" alt="${asset.name} Icon"> <p>${asset.name}: ${balance} ${asset.symbol} ($${(price * balance).toFixed(2)})</p></div>`;
             }
             document.getElementById('walletBalance').innerHTML = `<p class="details-balance">${walletBalance} $</p> <p class="subheader">Balance</p `
 
@@ -220,7 +221,7 @@
             const html5QrCode = new Html5Qrcode("qrScanner");
             const qrCodeSuccessCallback = (decodedText, decodedResult) => {
                 // Handle on success
-                document.getElementById("qrText").innerText = decodedText;
+                document.getElementsByClassName("qrText")[0].value = decodedText;
                 html5QrCode.stop().then(ignore => {}).catch(err => {});
             };
             const config = { fps: 10, qrbox: { width: 250, height: 250 } };

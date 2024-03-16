@@ -45,7 +45,7 @@
       if(_empty(data))
         document.getElementById('iAddr').value = '<not set>';
       else
-        document.getElementById('iAddr').value = data;
+        document.getElementById('iAddr').value = data.addresses[60];
     })
     .catch((error) => {
       console.error('Error:', error);
