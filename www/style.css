@@ -20,8 +20,11 @@ html {
 }
 
 body {
-    margin: 0;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
     padding: 100px 30px 30px 30px;
+    margin: 0;
 }
 
 .logo {
@@ -116,7 +119,7 @@ button:hover {
     margin-top: 0;
 }
 
-.modal {
+/* .modal {
     display: none;
     position: fixed;
     bottom: 0;
@@ -127,6 +130,33 @@ button:hover {
     box-shadow: rgba(9, 30, 66, 0.25) 0px 4px 8px -2px, rgba(9, 30, 66, 0.08) 0px 0px 0px 1px;
     border-radius: 20px 20px 0 0;
     z-index: 2;
+} */
+
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 73px;
+    width: 100%;
+    background-color: rgba(0, 0, 0, .5);
+    z-index: 4;
+}
+
+.modal.current {
+    display: block;
+}
+
+.modal-content {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    max-height: calc(100% - 40px);
+    background-color: var(--bg-color);
+    padding: 65px 25px 25px 25px;
+    overflow: auto;
+    border-radius: 20px 20px 0 0;
+    border-top: 1px solid var(--light-gray);
 }
 
 .title-modal {
@@ -169,6 +199,11 @@ button:hover {
 
 .logged-in #walletForm {
     display: none;
+}
+
+#walletForm,
+#walletAssets {
+    width: 100%;
 }
 
 /* Send */
@@ -218,6 +253,16 @@ button:hover {
 #qrScanner {
     border-radius: 12px;
     overflow: auto;
+}
+
+.container-qr {
+    display: none;
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    z-index: 4;
+    padding: 30px;
+    background-color: var(--bg-color);
 }
 
 /* Receive */
@@ -279,8 +324,7 @@ body.share {
 
 .asset-left {
     display: flex;
-    align-items: center
-    ;
+    align-items: center;
 }
 
 .asset-row img {
@@ -296,4 +340,17 @@ body.share {
 
 .asset-balance {
     opacity: .5;
+}
+
+.link-eth {
+    position: fixed;
+    bottom: 30px;
+    text-decoration: none;
+    color: var(--black);
+    background-color: var(--white);
+    padding: 14px 20px;
+    border-radius: 12px;
+    box-shadow: rgba(9, 30, 66, 0.1) 0px 1px 1px, rgba(9, 30, 66, .1) 0px 0px 1px 1px;
+    line-height: 18px;
+    text-align: center;
 }
