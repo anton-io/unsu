@@ -13,7 +13,7 @@
 
         :root {
             --black: #000000;
-            --black-50: rgba(255, 255, 255, 0.5);
+            --black-50: rgba(0, 0, 0, .5);
             --light-gray: #E6EAF0;
             --bg-color: #f7f7f7;
             --white: #ffffff;
@@ -116,6 +116,7 @@
             color: var(--black);
             padding: 20px;
             border-radius: 12px;
+            box-shadow: rgba(9, 30, 66, 0.1) 0px 1px 1px, rgba(9, 30, 66, .1) 0px 0px 1px 1px;
         }
 
         .details-key {
@@ -133,11 +134,27 @@
             bottom: 0;
             left: 0;
             right: 0;
-            padding: 30px;
+            padding: 80px 30px 30px 30px;
             background-color: var(--bg-color);
             box-shadow: rgba(9, 30, 66, 0.25) 0px 4px 8px -2px, rgba(9, 30, 66, 0.08) 0px 0px 0px 1px;
             border-radius: 20px 20px 0 0;
             z-index: 2;
+        }
+        
+        .title-modal {
+            position: absolute;
+            top: 33px;
+            margin: 0;
+            font-size: 20px;
+            font-weight: 400;
+        }
+
+        .close-modal {
+            position: absolute;
+            width: 25px;
+            top: 30px;
+            right: 30px;
+            cursor: pointer;
         }
 
         #walletBalance {
@@ -184,7 +201,8 @@
             margin-bottom: 15px;
         }
 
-        #send-confirm {
+        #send-confirm,
+        #send-wallet {
             margin-top: 25px;
         }
     </style>
@@ -204,15 +222,15 @@
     </div>
     <div id="walletDetails" class="modal"></div>
     <div id="walletSend" class="modal">
+        <p class="title-modal">Send</p>
+        <img class="close-modal" src="close-small.svg" alt="Close">
         <p class="subheader">Send to</p>
-        <input id="send-recipient" type="text">
+        <input id="send-recipient" type="text" placeholder="0x...">
         <p class="subheader">Amount (in USD)</p>
-        <input id="send-amount" type="text">
+        <input id="send-amount" type="text" placeholder="$">
         <button id="send-confirm">Send</button>
     </div>
-    <div id="walletReceive" class="modal">
-        <div id="walletQRCode"></div>
-    </div>
+    <div id="walletReceive" class="modal"></div>
     <script>
         const rpcUrl = 'https://eth-goerli.g.alchemy.com/v2/n-8ZlU1-OeBOYCvjCZTQCPfs5dR_0Z75';
         const provider = new ethers.providers.JsonRpcProvider(rpcUrl);
@@ -244,15 +262,11 @@
             wallet = deriveWalletFromString(seedPhrase);
 
             // Display wallet details
-            document.getElementById('walletDetails').innerHTML = `<p class="subheader">Address:</p> <p class="details-address blurred">${wallet.address}\n</p> <p class="subheader">Private Key:</p> <p class="details-key blurred">${wallet.privateKey}</p>`;
+            document.getElementById('walletDetails').innerHTML = `<p class="title-modal">Wallet details</p><img class="close-modal" src="close-small.svg" alt="Close"><p class="subheader">Address:</p> <p class="details-address blurred">${wallet.address}\n</p> <p class="subheader">Private Key:</p> <p class="details-key blurred">${wallet.privateKey}</p> <button id="send-wallet">Send wallet</button>`;
 
             // Fetch and display balance details
             const balance = await getEtherBalance(wallet.address);
             document.getElementById('walletBalance').innerHTML = `<p class="details-balance">${balance} ETH</p> <p class="subheader">Balance</p `
-
-            // Display QR code for the wallet address
-            const qrCodeURL = `https://chart.googleapis.com/chart?cht=qr&chl=${wallet.address}&chs=160x160&chld=L|0`;
-            document.getElementById('walletQRCode').innerHTML = `<img src="${qrCodeURL}" alt="Wallet QR Code">`;
 
             document.documentElement.classList.add('logged-in');
         }
@@ -308,6 +322,15 @@
             document.documentElement.classList.toggle('open-receive');
             document.documentElement.classList.remove('open-send');
             document.documentElement.classList.remove('open-details');
+        });
+
+        // Close modals
+        document.querySelectorAll('.close-modal').forEach(function(element) {
+            element.addEventListener('click', function() {
+                document.documentElement.classList.remove('open-receive');
+                document.documentElement.classList.remove('open-send');
+                document.documentElement.classList.remove('open-details');
+            });
         });
     </script>
 </body>
