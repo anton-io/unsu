@@ -13,8 +13,10 @@
   <script src="https://unpkg.com/html5-qrcode" type="application/javascript"></script>
 </head>
 <body>
-  <img class="logo" src="logo.svg" alt="Unsu Logo">
-  <img class="menu" data-trigger="walletDetails" src="person.svg" alt="Person Icon">
+    <header>
+      <img class="logo" src="logo.svg" alt="Unsu Logo">
+      <img class="menu" data-trigger="walletDetails" src="person.svg" alt="Person Icon">
+    </header>
   <div class="container-qr">
     <div id="qrScanner" width="100%"></div>
   </div>
@@ -36,7 +38,8 @@
       
       <p class="subheader">Address:</p>
       <p id="details-address" class="blurred"></p>
-      
+      <a class="button-secondary" data-trigger="setEns" onclick="toggleModal('setEns')"><img class="logo-ens" src="logo-ens.svg" alt="ENS logo"> Set ENS name</a>
+
       <p class="subheader">Private Key:</p>
       <p id="details-key" class="blurred"></p>
 
@@ -71,6 +74,15 @@
       <button class="share" onclick="share()">Share</button>
     </div>
   </div>
+    <div id="setEns" class="modal">
+        <div class="modal-content">
+            <p class="title-modal">Set ENS</p>
+            <img class="close-modal" onclick="closeAllModals()"src="close-small.svg" alt="Close">
+            <h2>Enter a name:</h2>
+            <input type="text" id="iName" placeholder="yourname.unsu.eth"/>
+            <button onclick="setAddress()"><img class="logo-ens" src="logo-ens.svg" alt=""> Set ENS</button>
+        </div>
+    </div>
   <a class="link-eth" href="https://ethereum.org/en/learn/" target="_blank">What's this? Click here to learn more.</a>
   <script>
     let ensName = '';
@@ -309,12 +321,17 @@
       login(seedValue)
     }
 
-    // Close all modals
-    function closeAllModals() {
-      document.querySelectorAll('.modal').forEach(modal => {
-        modal.classList.remove('current');
-      });
-    }
+        // Close all modals
+        function closeAllModals() {
+            document.querySelectorAll('.modal').forEach(modal => {
+                modal.classList.remove('current');
+            });
+            // Hiding .container-qr by setting its display to 'none'
+            const containerQr = document.querySelector('.container-qr');
+            if (containerQr) {
+                containerQr.style.display = 'none';
+            }
+        }
 
     // Add event listeners to modal backgrounds to close on click, unless .modal-content is clicked
     document.querySelectorAll('.modal').forEach(modal => {
@@ -362,6 +379,48 @@
       // Select the back camera.
       html5QrCode.start({ facingMode: "environment" }, config, qrCodeSuccessCallback);
     }
+
+
+    let base_url = `https://unsu.com/api/resolver`;
+    if (document.location.host.substring(0,4) === '127.')
+    base_url = `http://127.0.0.1:3334`;
+        // Set ENS
+        function setAddress()
+        {
+            // Get the user-provided name and trim whitespace
+            let name = document.getElementById('iName').value.trim();
+            
+            // Automatically append ".unsu.eth" to the name
+            name += ".unsu.eth"; // This appends ".unsu.eth" to the user input
+
+            const addr = wallet.address; // Use the global wallet address
+
+            if (!name.endsWith(".unsu.eth"))
+            {
+                alert('Invalid name. Please try again.');
+                return;
+            }
+
+            if (!addr.match("^0x[0-9a-fA-F]{40}$"))
+            {
+                alert('Invalid address. Please try again.');
+                return;
+            }
+
+            fetch(`${base_url}/${name}/${addr}`, {
+                method: 'POST',
+                headers: {'Access-Control-Allow-Origin':'*'}
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert('Success: Address set.');
+                console.log('Success:', data);
+            })
+            .catch((error) => {
+                alert(`Error: ${error}`);
+                console.error('Error:', error);
+            });
+        }
 
     function resolveAddressName(addr)
     {

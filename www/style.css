@@ -19,11 +19,21 @@ html {
     color: var(--black);
 }
 
+header {
+    position: fixed;
+    height: 100px;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: var(--bg-color);
+    z-index: 2;
+}
+
 body {
     display: flex;
     align-items: center;
     flex-direction: column;
-    padding: 100px 30px 30px 30px;
+    padding: 100px 30px 100px 30px;
     margin: 0;
 }
 
@@ -69,6 +79,9 @@ body {
 }
 
 button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     width: 100%;
     height: 50px;
     border: none;
@@ -84,6 +97,17 @@ button {
 
 button:hover {
     opacity: .8;
+}
+
+.button-secondary {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 18px;
+    border: 2px solid var(--light-gray);
+    border-radius: 10px;
+    height: 50px;
+    cursor: pointer;
 }
 
 .container-buttons {
@@ -119,19 +143,6 @@ button:hover {
     margin-top: 0;
 }
 
-/* .modal {
-    display: none;
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    padding: 80px 30px 30px 30px;
-    background-color: var(--bg-color);
-    box-shadow: rgba(9, 30, 66, 0.25) 0px 4px 8px -2px, rgba(9, 30, 66, 0.08) 0px 0px 0px 1px;
-    border-radius: 20px 20px 0 0;
-    z-index: 2;
-} */
-
 .modal {
     display: none;
     position: fixed;
@@ -153,7 +164,7 @@ button:hover {
     width: 100%;
     max-height: calc(100% - 40px);
     background-color: var(--bg-color);
-    padding: 65px 25px 25px 25px;
+    padding: 65px 30px 30px 30px;
     overflow: auto;
     border-radius: 20px 20px 0 0;
     border-top: 1px solid var(--light-gray);
@@ -207,8 +218,7 @@ button:hover {
 }
 
 /* Send */
-#send-amount,
-#send-recipient,
+input,
 #link-camera {
     width: 100%;
     height: 50px;
@@ -230,8 +240,7 @@ button:hover {
     margin-bottom: 15px;
 }
 
-#send-confirm,
-#send-wallet {
+.modal button {
     margin-top: 25px;
 }
 
@@ -240,9 +249,9 @@ button:hover {
     justify-content: center;
     align-items: center;
     min-width: 50px;
+    max-width: 50px;
     margin-left: 10px;
     padding: 0;
-    max-width: 50px;
     cursor: pointer;
 }
 
@@ -258,11 +267,13 @@ button:hover {
 .container-qr {
     display: none;
     position: fixed;
-    height: 100%;
+    height: 340px;
+    bottom: 330px;
     width: 100%;
     z-index: 4;
     padding: 30px;
     background-color: var(--bg-color);
+    z-index: 5;
 }
 
 /* Receive */
@@ -359,4 +370,10 @@ body.share {
     box-shadow: rgba(9, 30, 66, 0.1) 0px 1px 1px, rgba(9, 30, 66, .1) 0px 0px 1px 1px;
     line-height: 18px;
     text-align: center;
+}
+
+.logo-ens {
+    height: 25px;
+    width: 25px;
+    margin-right: 10px;
 }
