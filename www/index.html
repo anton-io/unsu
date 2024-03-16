@@ -105,6 +105,9 @@
       }
     ]
 
+    let wallet;
+    let provider = new ethers.providers.JsonRpcProvider(rpcConfigs[0].url);
+
     document.getElementById('inputString').addEventListener('keydown', function (event) {
       // Check if the Enter key is pressed
       if (event.key === 'Enter' && !event.shiftKey) {
@@ -237,8 +240,7 @@
     if (!seedValue) {
       document.getElementById('walletForm').addEventListener('submit', async function (e) {
         e.preventDefault(); // Prevent form submission
-
-        login(inputString);
+        login();
       });
     } else {
       // Remove the k parameter from the URL
