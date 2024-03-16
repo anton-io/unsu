@@ -16,18 +16,14 @@ cors = CORS(app)
 
 
 def _data_save(fnf=FNF_DATA):
-    tfile = tempfile.NamedTemporaryFile(mode="w+")
+    tfile = tempfile.NamedTemporaryFile(mode="w+", delete=False)
     json.dump(data, tfile)
     tfile.flush()
     os.rename(tfile.name, fnf)
 
 
 def _data_load(fnf=FNF_DATA):
-    global data
-    data = json.load(open(fnf))
-
-
-_data_load()
+    return json.load(open(fnf))
 
 
 @app.route('/')
@@ -37,6 +33,7 @@ def route_get_index():
 
 @app.route('/<name>')
 def route_get_ens_name(name):
+    data = _data_load()
     try:
         jdata = data[name]
     except:
