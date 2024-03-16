@@ -89,6 +89,11 @@
   <a class="link-eth" href="https://ethereum.org/en/learn/" target="_blank">What's this? Click here to learn more.</a>
   <script>
     let ensName = '';
+    let base_url = `https://unsu.com/api/resolver`;
+    if (document.location.host.substring(0, 4) === '127.') {
+      base_url = `http://127.0.0.1:3334`;
+    }
+
     const rpcConfigs = [
       {
         'name': 'Ethereum',
@@ -376,12 +381,6 @@
 
       // Select the back camera.
       html5QrCode.start({ facingMode: "environment" }, config, qrCodeSuccessCallback);
-    }
-
-
-    let base_url = `https://unsu.com/api/resolver`;
-    if (document.location.host.substring(0, 4) === '127.') {
-      base_url = `http://127.0.0.1:3334`;
     }
 
     // Set ENS
