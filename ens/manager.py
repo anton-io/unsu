@@ -5,14 +5,12 @@ import json
 import tempfile
 from flask import Flask, jsonify
 
+
 DIR_THIS = os.path.dirname(os.path.abspath(__file__))
 FNF_DATA = f"{DIR_THIS}/data.json"
 
 data = {}
 app  = Flask(__name__)
-
-# In-memory data store.
-# In a real application, this would be replaced with database calls.
 
 
 def _data_save(fnf=FNF_DATA):
@@ -26,6 +24,7 @@ def _data_load(fnf=FNF_DATA):
     global data
     data = json.load(open(fnf))
 
+
 _data_load()
 
 
@@ -35,19 +34,17 @@ def route_get_index():
 
 
 @app.route('/<name>')
-def route_get_name(name):
-    jdata = {"roldao": {"addresses": {"60": "0xEEED609ae400cAF2d9C3Fec8b07EDAB3D1288e20"}, "text": {"com.twitter": "roldao"}}}
+def route_get_ens_name(name):
+    try:
+        jdata = data[name]
+    except:
+        app.logger.warning(f"could not resolve name for: {name}")
+        jdata = {}
     return jsonify(jdata)
 
 
 @app.route('/<name>/<addr>', methods=['POST'])
-def create_item(name=None, addr=None):
-    # entry = request.json
-    # try:
-    #     addr = entry['addr']
-    # except:
-    #     return jsonify({'error': 'invalid_input'}), 400
-
+def route_add_ens_entry(name=None, addr=None):
     if name is None or addr is None:
         return jsonify({'error': 'invalid_input'}), 400
 
