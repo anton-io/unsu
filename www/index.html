@@ -28,7 +28,25 @@
     <button class="receive" data-trigger="walletReceive">Receive</button>
   </div>
   <div id="walletAssets"></div>
-  <div id="walletDetails" class="modal"></div>
+  
+  <div id="walletDetails" class="modal">
+    <div class="modal-content">
+      <p class="title-modal">Wallet details</p>
+      <img class="close-modal" onclick="closeAllModals()" src="close-small.svg" alt="Close">
+      
+      <p class="subheader">Address:</p>
+      <p id="details-address" class="blurred"></p>
+      
+      <p class="subheader">Private Key:</p>
+      <p id="details-key" class="blurred"></p>
+
+      <p class="subheader">Provider:</p>
+      <div id="details-provider"></div>
+
+      <button id="send-wallet">Send wallet</button>
+    </div>
+  </div>
+  
   <div id="walletSend" class="modal">
     <div class="modal-content">
       <p class="title-modal">Send</p>
@@ -104,7 +122,13 @@
     ]
 
     let wallet;
-    let provider = new ethers.providers.JsonRpcProvider(rpcConfigs[0].url);
+    let provider;
+    
+    function setProvider(index) {
+      provider = new ethers.providers.JsonRpcProvider(rpcConfigs[index].url);
+      document.getElementById('details-provider').textContent = rpcConfigs[index].name;
+    }
+    setProvider(0)
 
     document.getElementById('inputString').addEventListener('keydown', function (event) {
       // Check if the Enter key is pressed
@@ -171,7 +195,8 @@
       wallet = deriveWalletFromString(seedPhrase);
 
       // Display wallet details.
-      document.getElementById('walletDetails').innerHTML = `<div class="modal-content"><p class="title-modal">Wallet details</p><img class="close-modal" onclick="closeAllModals()"src="close-small.svg" alt="Close"><p class="subheader">Address:</p> <p class="details-address blurred">${wallet.address}\n</p> <p class="subheader">Private Key:</p> <p class="details-key blurred">${wallet.privateKey}</p> <button id="send-wallet">Send wallet</button></div>`;
+      document.getElementById('details-address').textContent = wallet.address
+      document.getElementById('details-key').textContent = wallet.privateKey
 
       // Fetch asset prices and balances in parallel
       const pricePromises = assets.map(asset => getPrice(asset));
