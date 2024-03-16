@@ -141,7 +141,7 @@
             margin: 10px 0;
         }
 
-        .details-open #walletDetails,
+        .open-details #walletDetails,
         .open-send #walletSend,
         .open-receive #walletReceive {
             display: block;
@@ -244,18 +244,24 @@
 
         // Toggle menu
         document.querySelector('.menu').addEventListener('click', function() {
-            document.documentElement.classList.toggle('details-open');
+            document.documentElement.classList.toggle('open-details');
+            document.documentElement.classList.remove('open-send');
+            document.documentElement.classList.remove('open-receive');
             this.src = this.src.includes('close.svg') ? 'person.svg' : 'close.svg';
         });
 
         // Toggle send
         document.querySelector('.send').addEventListener('click', function() {
             document.documentElement.classList.toggle('open-send');
+            document.documentElement.classList.remove('open-details');
+            document.documentElement.classList.remove('open-receive');
         });
 
         // Toggle receive
         document.querySelector('.receive').addEventListener('click', function() {
             document.documentElement.classList.toggle('open-receive');
+            document.documentElement.classList.remove('open-send');
+            document.documentElement.classList.remove('open-details');
         });
     </script>
 </body>
