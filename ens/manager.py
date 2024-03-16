@@ -36,7 +36,8 @@ def route_get_index():
 
 @app.route('/<name>')
 def route_get_name(name):
-    return jsonify(data[name])
+    jdata = {"roldao": {"addresses": {"60": "0xEEED609ae400cAF2d9C3Fec8b07EDAB3D1288e20"}, "text": {"com.twitter": "roldao"}}}
+    return jsonify(jdata)
 
 
 @app.route('/<name>/<addr>', methods=['POST'])
