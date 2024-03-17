@@ -134,6 +134,13 @@
 
       }
     ]
+    for (let i = 0; i < rpcConfigs.length; i++) {
+      const rpcConfig = rpcConfigs[i];
+      const providerElement = document.createElement('button');
+      providerElement.innerHTML = `<p>${rpcConfig.name}</p>`;
+      providerElement.addEventListener('click', () => setProvider(i));
+      document.getElementById('provider-selector').appendChild(providerElement);
+    }
 
     const assets = [
       {
@@ -325,6 +332,11 @@
         alert(`Error: ${error.message}`);
         // transactionStatus.innerText = `Error: ${error.message}`;
       }
+    }
+
+    function clearBalances() {
+      document.getElementById('walletAssets').innerHTML = '';
+      document.getElementById('walletBalance').innerHTML = '<p class="details-balance">0.00 $</p> <p class="subheader">Balance</p>';
     }
 
     // Fetch the seed value from the URL and login
