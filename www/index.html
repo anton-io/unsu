@@ -20,6 +20,7 @@
     <button id="details-provider" data-trigger="providerModal"><img id="icon-details-provider" src="" alt=""></button>
     <img class="menu" data-trigger="walletDetails" src="person.svg" alt="Person Icon">
   </header>
+  <p id="message-container"></p>
   <div class="container-qr">
     <div id="qrScanner" width="100%"></div>
   </div>
@@ -328,9 +329,11 @@
           await sendERC20(asset, recipient, amount);
         }
         alert('Transaction confirmed!');
+        showMessage('Transaction success', true);
         // transactionStatus.innerText = 'Transaction confirmed!';
       } catch (error) {
         alert(`Error: ${error.message}`);
+        showMessage('Transaction failed', false);
         // transactionStatus.innerText = `Error: ${error.message}`;
       }
     }
@@ -491,6 +494,25 @@
       .catch((error) => {
         console.error('Error:', error);
       });
+    }
+
+    // Messages
+    function showMessage(message, isSuccess) {
+      const messageContainer = document.getElementById('message-container');
+      const messageP = document.createElement('p');
+      messageP.textContent = message;
+      messageP.classList.add('message'); // Always add this class for basic styling
+      
+      // Determine which class to add based on isSuccess
+      messageP.classList.add(isSuccess ? 'success' : 'error');
+      
+      // Append the paragraph to the container
+      messageContainer.appendChild(messageP);
+      
+      // Remove the message after 2 seconds
+      setTimeout(() => {
+        messageP.remove();
+      }, 5000);
     }
 
     // Share tray
