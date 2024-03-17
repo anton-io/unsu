@@ -485,3 +485,41 @@ body.share {
 .message.error {
     background-color: #E03853;
 }
+
+@keyframes pulse {
+    0% {
+      transform: scale(1);
+      opacity: 1;
+    }
+    50% {
+      transform: scale(1.05);
+      opacity: 0.7;
+    }
+    100% {
+      transform: scale(1);
+      opacity: 1;
+    }
+}
+
+.container-loader {
+    display: none;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-color: var(--white);
+    z-index: 5;
+}
+
+.loader .container-loader {
+    display: flex;
+}
+
+.container-loader img {
+    width: 70vw;
+    animation: pulse 2s infinite ease-in-out;
+    transform-origin: center center;
+}

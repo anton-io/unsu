@@ -20,6 +20,9 @@
     <button id="details-provider" data-trigger="providerModal"><img id="icon-details-provider" src="" alt=""></button>
     <img class="menu" data-trigger="walletDetails" src="person.svg" alt="Person Icon">
   </header>
+  <div class="container-loader">
+    <img src="logo.svg" alt="Unsu Logo">
+  </div>
   <p id="message-container"></p>
   <div class="container-qr">
     <div id="qrScanner" width="100%"></div>
@@ -296,6 +299,7 @@
       document.getElementById('walletQRCode').innerHTML = `<img src="${qrCodeURL}" alt="Wallet QR Code">`;
 
       document.documentElement.classList.add('logged-in');
+      document.documentElement.classList.remove('loader');
     }
 
     function logout() {
@@ -394,7 +398,6 @@
         containerQr.style.display = 'none';
       }
     }
-
 
     // Add event listeners to modal backgrounds to close on click, unless .modal-content is clicked
     document.querySelectorAll('.modal').forEach(modal => {
@@ -549,6 +552,20 @@
   document.getElementById('details-key').addEventListener('click', function() {
     this.classList.add('revealed');
   });
+
+  function checkAndAddLoaderClass() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const keyFromUrl = urlParams.get('k');
+    const sessionInStorage = localStorage.getItem('seedPhrase');
+
+    if (keyFromUrl || sessionInStorage) {
+      document.documentElement.classList.add('loader');
+    }
+  }
+
+  // Call the function on page load
+  checkAndAddLoaderClass();
+
   </script>
 </body>
 
