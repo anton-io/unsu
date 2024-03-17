@@ -82,9 +82,9 @@
     })
       .then(response => response.json())
       .then(data => {
-        if(data.success){
-          alert('success')
-          console.log('Success:', data);
+        if(data.updated){
+          alert(`Name updated data ${data.updated['name']}`)
+          console.log('Name updated:', data);
         } else if (data.exists){
           alert('Error: name already set.')
           console.log('Name already set:', data);
