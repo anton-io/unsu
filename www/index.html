@@ -327,6 +327,7 @@
       const usdAmount = document.getElementById('send-amount').value;
       const amount = usdAmount; // TODO / price
 
+      document.getElementsByClassName('send')[0].classList.add('disabled');
       console.log('Sending', amount, assetSymbol, 'to', recipient, '...');
 
       try {
@@ -337,10 +338,12 @@
         }
         alert('Transaction confirmed!');
         showMessage('Transaction success', true);
+        document.getElementsByClassName('send')[0].classList.remove('disabled');
         // transactionStatus.innerText = 'Transaction confirmed!';
       } catch (error) {
         alert(`Error: ${error.message}`);
         showMessage('Transaction failed', false);
+        document.getElementsByClassName('send')[0].classList.remove('disabled');
         // transactionStatus.innerText = `Error: ${error.message}`;
       }
     }
