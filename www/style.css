@@ -193,6 +193,10 @@ button:hover {
     align-items: center;
 }
 
+.walletName {
+    text-align: center;
+}
+
 .details-balance {
     font-size: 30px;
     margin: 10px 0;
@@ -268,7 +272,7 @@ input,
     display: none;
     position: fixed;
     height: 340px;
-    bottom: 330px;
+    bottom: 440px;
     width: 100%;
     z-index: 4;
     padding: 30px;
@@ -285,6 +289,16 @@ input,
 
 .container-assets-horizontal .asset-row {
     height: 50px!important;
+    margin-right: 10px;
+    border: 2px solid transparent;
+    cursor: pointer;
+}
+
+.asset-row.selected {
+    border: 2px solid black;
+}
+
+.asset-row .asset-balance {
     margin-right: 10px;
 }
 
@@ -354,6 +368,7 @@ body.share {
 .asset-left {
     display: flex;
     align-items: center;
+    width: max-content;
 }
 
 .asset-row img {
@@ -369,6 +384,11 @@ body.share {
 
 .asset-balance {
     opacity: .5;
+}
+
+.container-assets-horizontal .asset-row img {
+    width: 35px;
+    height: 35px;
 }
 
 .link-eth {

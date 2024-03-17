@@ -26,7 +26,7 @@
     <textarea type="text" id="inputString" placeholder="Enter a unique string"></textarea>
     <button type="submit">Get started</button>
   </form>
-  <div id="walletName"></div>
+  <div class="walletName"></div>
   <div id="walletBalance"></div>
   <div class="container-buttons">
     <button class="send" data-trigger="walletSend">Send</button>
@@ -42,7 +42,7 @@
       <p class="subheader">Address:</p>
       <p id="details-address" class="blurred"></p>
       <a class="button-secondary" data-trigger="setEns" onclick="toggleModal('setEns')"><img class="logo-ens"
-          src="logo-ens.svg" alt="ENS logo"> Set ENS name</a>
+          src="logo-ens.svg" alt="ENS logo">  Set wallet name</a>
 
       <p class="subheader">Private Key:</p>
       <p id="details-key" class="blurred"></p>
@@ -66,26 +66,7 @@
           id="link-camera"><img src="icon-camera.svg" alt=""></a>
       </div>
       <p class="subheader">Select asset</p>
-      <div class="container-assets-horizontal">
-          <div class="asset-row">
-              <p class="asset-name">ETH</p>
-              <div class="asset-amount-value">
-                  <p class="asset-amount">5</p>
-              </div>
-          </div>
-          <div class="asset-row">
-              <p class="asset-name">USDT</p>
-              <div class="asset-amount-value">
-                  <p class="asset-amount">1000</p>
-              </div>
-          </div>
-          <div class="asset-row">
-              <p class="asset-name">USDC</p>
-              <div class="asset-amount-value">
-                  <p class="asset-amount">870</p>
-              </div>
-          </div>
-      </div>
+      <div class="container-assets-horizontal"></div>
       <p class="subheader">Amount (in USD)</p>
       <input id="send-amount" type="text" placeholder="$">
       <button id="send-confirm" onclick="sendEther()">Send</button>
@@ -95,17 +76,18 @@
     <div class="modal-content">
       <p class="title-modal">Receive</p>
       <img class="close-modal" onclick="closeAllModals()" src="close-small.svg" alt="Close">
+      <div class="walletName"></div>
       <div id="walletQRCode"></div>
       <button class="share" onclick="share()">Share</button>
     </div>
   </div>
   <div id="setEns" class="modal">
     <div class="modal-content">
-      <p class="title-modal">Set ENS</p>
+      <p class="title-modal">Set wallet name</p>
       <img class="close-modal" onclick="closeAllModals()" src="close-small.svg" alt="Close">
       <h2>Enter a name:</h2>
       <input type="text" id="iName" placeholder="yourname.unsu.eth" />
-      <button onclick="setAddress()"><img class="logo-ens" src="logo-ens.svg" alt=""> Set ENS</button>
+      <button onclick="setAddress()"><img class="logo-ens" src="logo-ens.svg" alt=""> Set name</button>
     </div>
   </div>
   <a class="link-eth" href="https://ethereum.org/en/learn/" target="_blank">What's this? Click here to learn more.</a>
@@ -284,6 +266,16 @@
         const balance = balances[i];
         walletBalance += price * balance;
         document.getElementById('walletAssets').innerHTML += `<div class="asset-row"><div class="asset-left"><img src="${asset.icon}" alt="${asset.name} Icon"><div><p class="asset-name">${asset.name}</p> <p class="asset-balance">${balance} ${asset.symbol}</p></div></div><p>$${(price * balance).toFixed(2)}</p></div>`;
+        document.getElementsByClassName('container-assets-horizontal')[0].innerHTML += `<div class="asset-row"><div class="asset-left"><img src="${asset.icon}" alt="${asset.name} Icon"><div><p class="asset-balance">${balance} ${asset.symbol}</p></div></div><p>$${(price * balance).toFixed(2)}</p></div>`;
+      
+        // Select assets
+        const divs = document.querySelectorAll('.container-assets-horizontal div');
+        divs.forEach(div => {
+            div.addEventListener('click', function () {
+                divs.forEach(d => d.classList.remove('selected'));
+                this.classList.add('selected');
+            });
+        });
       }
       document.getElementById('walletBalance').innerHTML = `<p class="details-balance">${walletBalance.toFixed(2)} $</p> <p class="subheader">Balance</p>`;
 
@@ -293,7 +285,6 @@
 
       document.documentElement.classList.add('logged-in');
     }
-
 
     function logout() {
       // Clear the seed phrase from local storage
@@ -305,7 +296,7 @@
 
     function share() {
       const address = wallet.address;
-      const ens = "afonso.eth"
+      const ens = ensName;
       const url = `share.html?address=${address}&ens=${ens}`;
       window.open(url, '_blank');
     }
@@ -462,7 +453,10 @@
           ensName = '';
         else {
           ensName = data.name;
-          document.getElementById('walletName').innerText = ensName;
+          var elems = document.getElementsByClassName('walletName');
+          for (var i = 0; i < elems.length; i++) {
+            elems[i].innerHTML = ensName;
+          }
         }
 
         console.log(`info: resolved ${addr} -> ${ensName}`);
