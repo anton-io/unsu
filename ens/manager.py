@@ -26,6 +26,23 @@ def _data_load(fnf=FNF_DATA):
     return json.load(open(fnf))
 
 
+def address_2_name(addr):
+    data = _data_load()
+    data_inverted = {value: key for key, value in data.items()}
+    try:
+        return data_inverted[addr]
+    except:
+        return  ''
+
+
+def name_2_address(name):
+    data = _data_load()
+    try:
+        return data[name]
+    except:
+        return ''
+
+
 @app.route('/')
 def route_get_index():
     return 'ens manager'
@@ -34,53 +51,48 @@ def route_get_index():
 @app.route('/name/<addr>')
 def route_get_addr(addr):
     # Get name for given address.
-    data = _data_load()
-    data_inverted = {value: key for key, value in data.items()}
-    try:
-        name = data_inverted[addr]
-        jdata = { 'name': name }
-    except:
-        name = ''
-        jdata = {'name': name}
+    name  = address_2_name(addr)
+    jdata = {'name': name}
+    if not name:
         app.logger.warning(f"could not resolve name for: {addr}")
-
-    app.logger.info(f"served: {addr} => {name}")
+    else:
+        app.logger.info(f"served: {addr} => {name}")
     return jsonify(jdata)
 
 
 @app.route('/addr/<name>')
 def route_get_name_addr(name):
     # Get address for given name.
-    data = _data_load()
-    try:
-        addr = data[name]
-        jdata = {
-            'addresses': {60: addr},'text': {}
-        }
-    except:
-        addr = '<not set>'
+    addr = name_2_address(name)
+    if not addr:
         jdata = {}
         app.logger.warning(f"could not resolve name: {name}")
-
-    app.logger.info(f"served: {name} => {addr}")
+    else:
+        jdata = { 'addresses': {60: addr}, 'text': {} }
+        app.logger.info(f"served: {name} => {addr}")
     return jsonify(jdata)
 
 
-@app.route('/set/<domain>/<addr>', methods=['POST'])
-def route_set_ens_entry(domain=None, addr=None):
-    if domain is None or addr is None:
+@app.route('/set/<name>/<addr>', methods=['POST'])
+def route_set_ens_entry(name=None, addr=None):
+    if name is None or addr is None:
         return jsonify({'error': 'invalid_input'}), 400
 
-    if not domain.endswith(".unsu.eth"):
+    if not name.endswith(".unsu.eth"):
         return jsonify({'error', 'invalid domain'}), 400
 
     if not re.match(r'0x[a-fA-F0-9]{40}', addr):
         return jsonify({'error', 'invalid address'}), 400
 
-    data[domain] = addr
+    addr_set = name_2_address(name)
+    if addr_set:
+        app.logger.info(f"exists: {name} => {addr_set} | ({addr})")
+        return jsonify({'exists': {'name': name, 'addr': addr_set}}), 400
+
+    data[name] = addr
     _data_save()
-    app.logger.info(f"updated: {domain} => {addr}")
-    return jsonify({'updated': {'name': domain, 'addr': addr}}), 201
+    app.logger.info(f"updated: {name} => {addr}")
+    return jsonify({'updated': {'name': name, 'addr': addr}}), 201
 
 
 if __name__ == '__main__':
