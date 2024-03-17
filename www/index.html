@@ -42,13 +42,13 @@
       <img class="close-modal" onclick="closeAllModals()" src="close-small.svg" alt="Close">
 
       <p class="subheader">Address:</p>
-      <p id="details-address" class="blurred"></p>
+      <p id="details-address"></p>
       <a class="button-secondary" data-trigger="setEns" onclick="toggleModal('setEns')"><img class="logo-ens"
           src="logo-ens.svg" alt="ENS logo"> Set wallet name</a>
 
       <p class="subheader">Private Key:</p>
       
-      <p id="details-key" class="blurred"></p>
+      <p id="details-key"></p>
 
       <button id="send-wallet">Send wallet</button>
       <button id="logout-btn" onclick="logout()">Logout</button>
@@ -536,6 +536,11 @@
               console.error('Async: Could not copy text: ', err);
           });
       }
+  });
+
+  // Show/hide private key
+  document.getElementById('details-key').addEventListener('click', function() {
+    this.classList.add('revealed');
   });
   </script>
 </body>

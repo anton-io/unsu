@@ -123,6 +123,7 @@ button:hover {
 
 #details-address,
 #details-key {
+    position: relative;
     text-wrap: wrap;
     width: 100%;
     line-break: anywhere;
@@ -136,6 +137,25 @@ button:hover {
 
 .details-key {
     margin-bottom: 0;
+}
+
+#details-key::after {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    content: 'Click to reveal';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgb(255, 255, 255);
+    color: var(--black);
+    border-radius: 12px;
+}
+
+#details-key.revealed::after {
+    display: none;
 }
 
 .subheader {
