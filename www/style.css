@@ -268,7 +268,7 @@ input,
     display: none;
     position: fixed;
     height: 340px;
-    bottom: 330px;
+    bottom: 440px;
     width: 100%;
     z-index: 4;
     padding: 30px;
@@ -285,6 +285,10 @@ input,
 
 .container-assets-horizontal .asset-row {
     height: 50px!important;
+    margin-right: 10px;
+}
+
+.asset-row .asset-balance {
     margin-right: 10px;
 }
 
@@ -354,6 +358,7 @@ body.share {
 .asset-left {
     display: flex;
     align-items: center;
+    width: max-content;
 }
 
 .asset-row img {
@@ -369,6 +374,11 @@ body.share {
 
 .asset-balance {
     opacity: .5;
+}
+
+.container-assets-horizontal .asset-row img {
+    width: 35px;
+    height: 35px;
 }
 
 .link-eth {
