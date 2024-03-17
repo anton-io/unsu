@@ -193,6 +193,10 @@ button:hover {
     align-items: center;
 }
 
+.walletName {
+    text-align: center;
+}
+
 .details-balance {
     font-size: 30px;
     margin: 10px 0;

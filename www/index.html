@@ -26,7 +26,7 @@
     <textarea type="text" id="inputString" placeholder="Enter a unique string"></textarea>
     <button type="submit">Get started</button>
   </form>
-  <div id="walletName"></div>
+  <div class="walletName"></div>
   <div id="walletBalance"></div>
   <div class="container-buttons">
     <button class="send" data-trigger="walletSend">Send</button>
@@ -76,6 +76,7 @@
     <div class="modal-content">
       <p class="title-modal">Receive</p>
       <img class="close-modal" onclick="closeAllModals()" src="close-small.svg" alt="Close">
+      <div class="walletName"></div>
       <div id="walletQRCode"></div>
       <button class="share" onclick="share()">Share</button>
     </div>
@@ -279,7 +280,7 @@
 
     function share() {
       const address = wallet.address;
-      const ens = "afonso.eth"
+      const ens = ensName;
       const url = `share.html?address=${address}&ens=${ens}`;
       window.open(url, '_blank');
     }
@@ -431,7 +432,10 @@
           ensName = '';
         else {
           ensName = data.name;
-          document.getElementById('walletName').innerText = ensName;
+          var elems = document.getElementsByClassName('walletName');
+          for (var i = 0; i < elems.length; i++) {
+            elems[i].innerHTML = ensName;
+          }
         }
 
         console.log(`info: resolved ${addr} -> ${ensName}`);
