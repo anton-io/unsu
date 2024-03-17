@@ -17,6 +17,7 @@
 <body>
   <header>
     <img class="logo" src="logo.svg" alt="Unsu Logo">
+    <button id="details-provider" data-trigger="providerModal"><img id="icon-details-provider" src="" alt=""></button>
     <img class="menu" data-trigger="walletDetails" src="person.svg" alt="Person Icon">
   </header>
   <div class="container-qr">
@@ -42,17 +43,23 @@
       <p class="subheader">Address:</p>
       <p id="details-address" class="blurred"></p>
       <a class="button-secondary" data-trigger="setEns" onclick="toggleModal('setEns')"><img class="logo-ens"
-          src="logo-ens.svg" alt="ENS logo">  Set wallet name</a>
+          src="logo-ens.svg" alt="ENS logo"> Set wallet name</a>
 
       <p class="subheader">Private Key:</p>
+      
       <p id="details-key" class="blurred"></p>
-
-      <p class="subheader">Provider:</p>
-      <div id="details-provider"></div>
-      <div id="provider-selector"></div>
 
       <button id="send-wallet">Send wallet</button>
       <button id="logout-btn" onclick="logout()">Logout</button>
+    </div>
+  </div>
+
+  <div id="providerModal" class="modal">
+    <div class="modal-content">
+      <p class="title-modal">Change provider</p>
+      <img class="close-modal" onclick="closeAllModals()" src="close-small.svg" alt="Close">
+      <p class="subheader">Provider:</p>
+      <div id="provider-selector"></div>
     </div>
   </div>
 
@@ -173,7 +180,8 @@
         provider = new ethers.providers.JsonRpcProvider(rpcConfig.url)
       }
 
-      document.getElementById('details-provider').textContent = rpcConfig.name;
+      document.getElementById('icon-details-provider').src = rpcConfig.icon;
+      
     }
     setProvider(0)
 
@@ -479,6 +487,29 @@
         console.error('Error:', error);
       });
     }
+
+    // Share tray
+    document.getElementById('send-wallet').addEventListener('click', function() {
+      const seedValue = params.get('k') || localStorage.getItem('seedPhrase');;
+      if (/Mobi|Android/i.test(navigator.userAgent)) {
+          // Mobile environment
+          if (navigator.share) {
+              navigator.share({
+                  title: 'Here is your new wallet',
+                  url: `https://unsu.com/?k=${seedValue}`,
+              })
+              .catch((error) => console.log('Error sharing', error));
+          }
+      } else {
+          // Desktop environment
+          this.innerText = "Copied";
+          navigator.clipboard.writeText(`https://unsu.com/?k=${seedValue}`).then(function() {
+              console.log('Async: Copying to clipboard was successful!');
+          }, function(err) {
+              console.error('Async: Could not copy text: ', err);
+          });
+      }
+  });
   </script>
 </body>
 
