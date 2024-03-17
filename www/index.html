@@ -379,15 +379,22 @@
 
     // Close all modals
     function closeAllModals() {
+      // Close all modals
       document.querySelectorAll('.modal').forEach(modal => {
         modal.classList.remove('current');
       });
-      // Hiding .container-qr by setting its display to 'none'
+      // Remove 'revealed' class from #details-key if it exists
+      const detailsKey = document.getElementById("details-key");
+      if (detailsKey) {
+        detailsKey.classList.remove('revealed');
+      }
+      // Hide .container-qr by setting its display to 'none'
       const containerQr = document.querySelector('.container-qr');
       if (containerQr) {
         containerQr.style.display = 'none';
       }
     }
+
 
     // Add event listeners to modal backgrounds to close on click, unless .modal-content is clicked
     document.querySelectorAll('.modal').forEach(modal => {
