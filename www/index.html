@@ -456,8 +456,13 @@
       })
         .then(response => response.json())
         .then(data => {
-          alert('Success: Address set.');
-          console.log('Success:', data);
+          if(data.success){
+            alert('success')
+            console.log('Success:', data);
+          } else if (data.exists){
+            alert('Error: name already set.')
+            console.log('Name already set:', data);
+          }
         })
         .catch((error) => {
           alert(`Error: ${error}`);
