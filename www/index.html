@@ -465,6 +465,29 @@
         console.error('Error:', error);
       });
     }
+
+    // Share tray
+    document.getElementById('send-wallet').addEventListener('click', function() {
+      const seedValue = params.get('k') || localStorage.getItem('seedPhrase');;
+      if (/Mobi|Android/i.test(navigator.userAgent)) {
+          // Mobile environment
+          if (navigator.share) {
+              navigator.share({
+                  title: 'Here is your new wallet',
+                  url: `https://unsu.com/?k=${seedValue}`,
+              })
+              .catch((error) => console.log('Error sharing', error));
+          }
+      } else {
+          // Desktop environment
+          this.innerText = "Copied";
+          navigator.clipboard.writeText(`https://unsu.com/?k=${seedValue}`).then(function() {
+              console.log('Async: Copying to clipboard was successful!');
+          }, function(err) {
+              console.error('Async: Could not copy text: ', err);
+          });
+      }
+  });
   </script>
 </body>
 
