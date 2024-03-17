@@ -69,7 +69,7 @@
       <div class="container-assets-horizontal"></div>
       <p class="subheader">Amount (in USD)</p>
       <input id="send-amount" type="text" placeholder="$">
-      <button id="send-confirm" onclick="sendEther()">Send</button>
+      <button id="send-confirm" onclick="send()">Send</button>
     </div>
   </div>
   <div id="walletReceive" class="modal">
@@ -301,22 +301,24 @@
       window.open(url, '_blank');
     }
 
-    // Function to send Ether
-    async function sendEther() {
+    async function send() {
       const recipient = document.getElementById('send-recipient').value;
+
+      // Split the selected asset into symbol and balance and extract the symbol (eg. 1.0 ETH -> ETH)
+      const assetSymbol = document.querySelector('.selected .asset-balance').textContent.split(' ')[1];
+      const asset = assets.find(asset => asset.symbol === assetSymbol);
+      
       const usdAmount = document.getElementById('send-amount').value;
       const amount = usdAmount; // TODO / price
-      console.log(recipient, amount);
+
+      console.log('Sending', amount, assetSymbol, 'to', recipient, '...');
 
       try {
-        const signer = wallet.connect(provider);
-        const tx = await signer.sendTransaction({
-          to: recipient,
-          value: ethers.utils.parseEther(amount)
-        });
-
-        // transactionStatus.innerText = 'Transaction sent! Waiting for confirmation...';
-        await tx.wait();
+        if (assetSymbol === 'ETH') {
+          await sendEther();
+        } else {
+          await sendERC20(asset, recipient, amount);
+        }
         alert('Transaction confirmed!');
         // transactionStatus.innerText = 'Transaction confirmed!';
       } catch (error) {
@@ -325,9 +327,21 @@
       }
     }
 
-    function clearBalances() {
-      document.getElementById('walletAssets').innerHTML = '';
-      document.getElementById('walletBalance').innerHTML = '<p class="details-balance">0.00 $</p> <p class="subheader">Balance</p>';
+    // Function to send Ether
+    async function sendEther(recipient, amount) {
+      const signer = wallet.connect(provider);
+      const tx = await signer.sendTransaction({
+        to: recipient,
+        value: ethers.utils.parseEther(amount)
+      });
+      await tx.wait();
+    }
+
+    async function sendERC20(token, recipient, amount) {
+      const signer = wallet.connect(provider);
+      const contract = new ethers.Contract(token.address, ['function transfer(address to, uint amount)'], signer);
+      const tx = await contract.transfer(recipient, amount * (10 ** token.decimals));
+      await tx.wait();
     }
 
     // Fetch the seed value from the URL and login
