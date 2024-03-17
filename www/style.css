@@ -290,6 +290,12 @@ input,
 .container-assets-horizontal .asset-row {
     height: 50px!important;
     margin-right: 10px;
+    border: 2px solid transparent;
+    cursor: pointer;
+}
+
+.asset-row.selected {
+    border: 2px solid black;
 }
 
 .asset-row .asset-balance {
