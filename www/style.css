@@ -208,17 +208,19 @@ button:hover {
     display: block;
 }
 
-.logged-in .container-buttons {
-    display: flex;
-}
-
-.logged-in #walletForm {
+.logged-in #walletForm,
+#details-provider {
     display: none;
 }
 
 #walletForm,
 #walletAssets {
     width: 100%;
+}
+
+.logged-in .container-buttons,
+.logged-in #details-provider {
+    display: flex;
 }
 
 /* Send */
@@ -409,3 +411,26 @@ body.share {
     width: 25px;
     margin-right: 10px;
 }
+
+/* Details provider */
+
+#details-provider {
+    position: fixed;
+    right: 80px;
+    height: 40px;
+    top: 20px;
+    width: max-content;
+    border-radius: 8px;
+    background-color: var(--white);
+    color: var(--black);
+    box-shadow: rgba(9, 30, 66, 0.1) 0px 1px 1px, rgba(9, 30, 66, .1) 0px 0px 1px 1px;
+    width: 40px;
+}
+
+#details-provider img {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+}
+
+  
