@@ -1,1 +1,1 @@
-# unsu.com - Ultra Easy Crypto Payments
+# unsu.com - UNSU - A Wallet Everyone Can Use.
