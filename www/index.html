@@ -348,7 +348,7 @@
     async function sendERC20(token, recipient, amount) {
       const signer = wallet.connect(provider);
       const contract = new ethers.Contract(token.address, ['function transfer(address to, uint amount)'], signer);
-      const tx = await contract.transfer(recipient, amount * (10 ** token.decimals));
+      const tx = await contract.transfer(recipient, ethers.utils.parseUnits(amount, token.decimals));
       await tx.wait();
     }
 
