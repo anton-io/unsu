@@ -127,7 +127,10 @@
       const rpcConfig = rpcConfigs[i];
       const providerElement = document.createElement('button');
       providerElement.innerHTML = `<p>${rpcConfig.name}</p>`;
-      providerElement.addEventListener('click', () => setProvider(i));
+      providerElement.addEventListener('click', () => {
+        setProvider(i)
+        closeAllModals()
+      });
       document.getElementById('provider-selector').appendChild(providerElement);
     }
 
