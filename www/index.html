@@ -42,7 +42,7 @@
       <p class="subheader">Address:</p>
       <p id="details-address" class="blurred"></p>
       <a class="button-secondary" data-trigger="setEns" onclick="toggleModal('setEns')"><img class="logo-ens"
-          src="logo-ens.svg" alt="ENS logo"> Set ENS name</a>
+          src="logo-ens.svg" alt="ENS logo">  Set wallet name</a>
 
       <p class="subheader">Private Key:</p>
       <p id="details-key" class="blurred"></p>
@@ -66,26 +66,7 @@
           id="link-camera"><img src="icon-camera.svg" alt=""></a>
       </div>
       <p class="subheader">Select asset</p>
-      <div class="container-assets-horizontal">
-          <div class="asset-row">
-              <p class="asset-name">ETH</p>
-              <div class="asset-amount-value">
-                  <p class="asset-amount">5</p>
-              </div>
-          </div>
-          <div class="asset-row">
-              <p class="asset-name">USDT</p>
-              <div class="asset-amount-value">
-                  <p class="asset-amount">1000</p>
-              </div>
-          </div>
-          <div class="asset-row">
-              <p class="asset-name">USDC</p>
-              <div class="asset-amount-value">
-                  <p class="asset-amount">870</p>
-              </div>
-          </div>
-      </div>
+      <div class="container-assets-horizontal"></div>
       <p class="subheader">Amount (in USD)</p>
       <input id="send-amount" type="text" placeholder="$">
       <button id="send-confirm" onclick="sendEther()">Send</button>
@@ -277,6 +258,7 @@
         const balance = balances[i];
         walletBalance += price * balance;
         document.getElementById('walletAssets').innerHTML += `<div class="asset-row"><div class="asset-left"><img src="${asset.icon}" alt="${asset.name} Icon"><div><p class="asset-name">${asset.name}</p> <p class="asset-balance">${balance} ${asset.symbol}</p></div></div><p>$${(price * balance).toFixed(2)}</p></div>`;
+        document.getElementsByClassName('container-assets-horizontal')[0].innerHTML += `<div class="asset-row"><div class="asset-left"><img src="${asset.icon}" alt="${asset.name} Icon"><div><p class="asset-name">${asset.name}</p> <p class="asset-balance">${balance} ${asset.symbol}</p></div></div><p>$${(price * balance).toFixed(2)}</p></div>`;
       }
       document.getElementById('walletBalance').innerHTML = `<p class="details-balance">${walletBalance.toFixed(2)} $</p> <p class="subheader">Balance</p>`;
 
@@ -286,7 +268,6 @@
 
       document.documentElement.classList.add('logged-in');
     }
-
 
     function logout() {
       // Clear the seed phrase from local storage
