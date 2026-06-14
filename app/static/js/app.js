@@ -21,6 +21,12 @@ const networkConfigs = {
         url: 'https://sepolia-rollup.arbitrum.io/rpc',
         icon: 'https://cryptologos.cc/logos/arbitrum-arb-logo.png',
         chainId: 421614
+      },
+      {
+        name: 'Arc Testnet',
+        url: 'https://rpc.testnet.arc.network',
+        icon: 'https://assets.coingecko.com/coins/images/6319/standard/usdc.png',
+        chainId: 5042002
       }
     ],
     assets: [
@@ -37,7 +43,8 @@ const networkConfigs = {
         decimals: 6,
         address: '0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238',
         priceFeed: '0x8fFfFfd4AfB6115b954Bd326cbe7B4BA576818f6',
-        icon: 'https://assets.coingecko.com/coins/images/6319/standard/usdc.png'
+        icon: 'https://assets.coingecko.com/coins/images/6319/standard/usdc.png',
+        excludeChains: [5042002]
       },
       {
         name: 'Wrapped Bitcoin',
@@ -45,7 +52,16 @@ const networkConfigs = {
         decimals: 8,
         address: '0x92f3B59a79bFf5dc60c0d59eA13a44D082B2bdFC',
         priceFeed: '0x1b44F3514812d835EB1BDB0acB33d3fA3351Ee43',
-        icon: 'https://assets.coingecko.com/coins/images/7598/standard/wrapped_bitcoin_wbtc.png'
+        icon: 'https://assets.coingecko.com/coins/images/7598/standard/wrapped_bitcoin_wbtc.png',
+        excludeChains: [5042002]
+      },
+      {
+        name: 'USD Coin',
+        symbol: 'USDC',
+        decimals: 6,
+        address: '0x3600000000000000000000000000000000000000',
+        icon: 'https://assets.coingecko.com/coins/images/6319/standard/usdc.png',
+        chainId: 5042002
       }
     ]
   },
@@ -545,7 +561,15 @@ let builtInAssetOverrides = {}; // Format: { 'networkMode-chainId-symbol': { ove
 // Required assets that cannot be hidden or edited (symbol-based)
 const REQUIRED_ASSETS = ['ETH'];
 
-function isRequiredAsset(assetSymbol) {
+// Chains where normally-required assets can be hidden
+const REQUIRED_ASSET_EXCEPTIONS = {
+  5042002: ['ETH']  // Arc uses USDC as native gas token
+};
+
+function isRequiredAsset(assetSymbol, chainId) {
+  if (chainId && REQUIRED_ASSET_EXCEPTIONS[chainId]?.includes(assetSymbol)) {
+    return false;
+  }
   return REQUIRED_ASSETS.includes(assetSymbol);
 }
 
@@ -606,11 +630,22 @@ function saveCustomAssets() {
   }
 }
 
+// Default hidden assets per chain (applied if user hasn't customized)
+const DEFAULT_HIDDEN_ASSETS = {
+  'testnet-5042002': ['ETH']  // Arc uses USDC as native gas, hide ETH by default
+};
+
 function loadHiddenAssets() {
   try {
     const stored = localStorage.getItem('hiddenAssets');
     if (stored) {
       hiddenAssets = JSON.parse(stored);
+    }
+    // Apply defaults for chains not yet in hiddenAssets
+    for (const [key, symbols] of Object.entries(DEFAULT_HIDDEN_ASSETS)) {
+      if (!(key in hiddenAssets)) {
+        hiddenAssets[key] = symbols;
+      }
     }
   } catch (error) {
     console.error('Failed to load hidden assets:', error);
@@ -628,7 +663,7 @@ function saveHiddenAssets() {
 
 function hideBuiltInAsset(networkMode, chainId, assetSymbol) {
   // Prevent hiding required assets
-  if (isRequiredAsset(assetSymbol)) {
+  if (isRequiredAsset(assetSymbol, chainId)) {
     showMessage('Cannot hide required asset', false);
     return;
   }
@@ -739,6 +774,7 @@ function getAllAssetsForChain(networkMode, chainId) {
   if (builtInChain) {
     // For built-in chains, get assets from networkConfigs and apply overrides
     builtInAssets = networkConfigs[networkMode].assets
+      .filter(asset => (!asset.chainId || asset.chainId === chainId) && (!asset.excludeChains || !asset.excludeChains.includes(chainId)))
       .filter(asset => !isAssetHidden(networkMode, chainId, asset.symbol))
       .map(asset => {
         const override = getBuiltInAssetOverride(networkMode, chainId, asset.symbol);
@@ -778,7 +814,9 @@ function getAllAssetsForChainIncludingHidden(networkMode, chainId) {
   const builtInChain = networkConfigs[networkMode]?.rpcs.find(rpc => rpc.chainId === chainId);
   if (builtInChain) {
     // For built-in chains, get assets from networkConfigs and apply overrides
-    builtInAssets = networkConfigs[networkMode].assets.map(asset => {
+    builtInAssets = networkConfigs[networkMode].assets
+      .filter(asset => (!asset.chainId || asset.chainId === chainId) && (!asset.excludeChains || !asset.excludeChains.includes(chainId)))
+      .map(asset => {
       const override = getBuiltInAssetOverride(networkMode, chainId, asset.symbol);
       return {
         ...asset,
@@ -838,6 +876,7 @@ const PRICE_CACHE_TTL = 60000; // 1 minute
 // Provider Management
 function setProvider(index) {
   currentProviderIndex = index;
+  localStorage.setItem('providerIndex', index);
   const rpcConfig = rpcConfigs[index];
 
   if (rpcConfig.ensAddress) {
@@ -1160,15 +1199,19 @@ async function loadBalances(resetBalance = true) {
   }
 
   try {
+    // Get visible assets for current chain
+    const chainId = rpcConfigs[currentProviderIndex]?.chainId;
+    const visibleAssets = chainId ? getAllAssetsForChain(currentNetworkMode, chainId) : assets;
+
     // Batch fetch all prices in a single API call
-    const balancePromises = assets.map(asset =>
+    const balancePromises = visibleAssets.map(asset =>
       asset.name === 'Ether'
         ? getEtherBalance(wallet.address)
         : getERC20Balance(wallet.address, asset)
     );
 
     const [prices, balances] = await Promise.all([
-      getAllPrices(assets),
+      getAllPrices(visibleAssets),
       Promise.all(balancePromises)
     ]);
 
@@ -1182,8 +1225,8 @@ async function loadBalances(resetBalance = true) {
     const fragment = document.createDocumentFragment();
     const horizontalFragment = document.createDocumentFragment();
 
-    for (let i = 0; i < assets.length; i++) {
-      const asset = assets[i];
+    for (let i = 0; i < visibleAssets.length; i++) {
+      const asset = visibleAssets[i];
       const price = prices[i];
       const balance = balances[i];
       const balanceUSD = price * balance;
@@ -1315,7 +1358,9 @@ async function send() {
   }
 
   const assetSymbol = selectedRadio.value;
-  const asset = assets.find(a => a.symbol === assetSymbol);
+  const chainId = rpcConfigs[currentProviderIndex]?.chainId;
+  const visibleAssets = chainId ? getAllAssetsForChain(currentNetworkMode, chainId) : assets;
+  const asset = visibleAssets.find(a => a.symbol === assetSymbol);
   const amount = document.getElementById('send-amount').value;
 
   if (!amount || parseFloat(amount) <= 0) {
@@ -1606,8 +1651,10 @@ function init() {
   // Initialize network mode UI
   updateNetworkModeUI();
 
-  // Set default provider
-  setProvider(0);
+  // Restore saved provider or default to first
+  const savedProviderIndex = parseInt(localStorage.getItem('providerIndex') || '0');
+  const providerIndex = savedProviderIndex < rpcConfigs.length ? savedProviderIndex : 0;
+  setProvider(providerIndex);
 
   // Initialize provider selector
   initializeProviderSelector();
@@ -2686,7 +2733,7 @@ function loadAssetListForChain(networkMode, chainId) {
 
     const isCustom = asset.custom === true;
     const isBuiltIn = asset.builtin === true;
-    const isRequired = isBuiltIn && isRequiredAsset(asset.symbol);
+    const isRequired = isBuiltIn && isRequiredAsset(asset.symbol, chainId);
 
     assetItem.innerHTML = `
       <div class="chain-item-header">
