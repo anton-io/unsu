@@ -273,6 +273,7 @@
         <span class="network-badge">Ethereum</span>
         <span class="network-badge">Base</span>
         <span class="network-badge">Arbitrum</span>
+        <span class="network-badge">Arc</span>
         <span class="network-badge">+ Custom Chains</span>
       </div>
       <p style="margin-top: 15px; font-size: 14px; color: var(--text-secondary);">
@@ -286,9 +287,36 @@
         <li><strong>Unlock:</strong> Enter your secret phrase to access your wallet instantly</li>
         <li><strong>Send:</strong> Enter recipient address (or scan QR code), amount, and send</li>
         <li><strong>Receive:</strong> Share your address or QR code—no extra steps required</li>
+        <li><strong>Bridge:</strong> Move USDC between chains - select a destination, enter an amount, and the wallet handles the rest</li>
         <li><strong>Customize:</strong> Add or remove chains and assets, configure RPC endpoints, and personalize your experience</li>
         <li><strong>ENS Names:</strong> Use readable names like "yourname.unsu.eth" instead of long addresses</li>
       </ul>
+    </div>
+
+    <div class="about-section">
+      <h2>Bridge USDC</h2>
+      <p>
+        Move USDC between chains directly from the wallet using Circle's Cross-Chain Transfer Protocol (CCTP).
+        No wrapped tokens, no liquidity pools, no slippage. Native USDC is burned on one chain and minted on another.
+      </p>
+      <ul>
+        <li><strong>Simple:</strong> Select a destination chain, enter an amount, and confirm. The wallet handles approval, burn, attestation, and mint automatically.</li>
+        <li><strong>Resumable:</strong> Bridge progress is saved locally. If you close the browser during the 1-5 minute attestation wait, your bridge resumes when you return.</li>
+        <li><strong>All directions:</strong> Bridge between any supported CCTP chains - Ethereum, Base, Arbitrum, and Arc.</li>
+      </ul>
+    </div>
+
+    <div class="about-section">
+      <h2>Arc Network</h2>
+      <p>
+        Arc is a chain where USDC is the native gas token. Instead of needing ETH to pay for transactions,
+        you pay fees in USDC. This removes the friction of acquiring a separate token just for gas,
+        making it simpler for users who primarily transact in stablecoins.
+      </p>
+      <p>
+        unsu supports Arc Testnet out of the box. Bridge USDC from any supported testnet to Arc and
+        start transacting immediately - no need to find a faucet or swap for a gas token.
+      </p>
     </div>
 
     <div class="about-section">
