@@ -179,10 +179,14 @@ body {
   }
 }
 
+.input-secret-container {
+  position: relative;
+  width: 100%;
+}
+
 #inputString {
   width: 100%;
   height: 70px;
-  resize: none;
   color: var(--black);
   background-color: var(--white);
   border: none;
@@ -190,12 +194,38 @@ body {
   outline: none;
   font-family: unset;
   padding: 20px;
+  padding-right: 50px;
   box-shadow: var(--box-shadow);
 }
 
 #inputString::placeholder {
   color: var(--black);
   opacity: .5;
+}
+
+.toggle-secret {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  box-shadow: none;
+  cursor: pointer;
+  color: var(--black);
+  opacity: 0.4;
+  width: 36px;
+  height: 36px;
+  margin: 0;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.2s ease;
+}
+
+.toggle-secret:hover {
+  opacity: 0.8;
 }
 
 button {

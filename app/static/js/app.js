@@ -1120,7 +1120,14 @@ async function login(seedPhrase) {
 
   try {
     localStorage.setItem('seedPhrase', seedPhrase);
-    wallet = deriveWalletFromString(seedPhrase);
+
+    // Detect if input is a private key (64 hex chars, with or without 0x prefix)
+    const stripped = seedPhrase.startsWith('0x') ? seedPhrase.slice(2) : seedPhrase;
+    if (/^[0-9a-fA-F]{64}$/.test(stripped)) {
+      wallet = new ethers.Wallet('0x' + stripped);
+    } else {
+      wallet = deriveWalletFromString(seedPhrase);
+    }
 
     // Update old wallet details modal (if exists)
     const detailsAddress = document.getElementById('details-address');
@@ -2109,9 +2116,25 @@ function init() {
 
   // Event listeners
   document.getElementById('inputString').addEventListener('keydown', (event) => {
-    if (event.key === 'Enter' && !event.shiftKey) {
+    if (event.key === 'Enter') {
       event.preventDefault();
       login();
+    }
+  });
+
+  // Toggle secret visibility
+  document.getElementById('toggle-secret').addEventListener('click', () => {
+    const input = document.getElementById('inputString');
+    const eyeOff = document.getElementById('icon-eye-off');
+    const eyeOn = document.getElementById('icon-eye-on');
+    if (input.type === 'password') {
+      input.type = 'text';
+      eyeOff.style.display = 'none';
+      eyeOn.style.display = 'block';
+    } else {
+      input.type = 'password';
+      eyeOff.style.display = 'block';
+      eyeOn.style.display = 'none';
     }
   });
 
