@@ -117,7 +117,9 @@ _cache_enabled = True
 def _data_save(fnf=FNF_DATA):
     """Atomically save ENS data to JSON file and invalidate cache"""
     global _cache
-    tfile = tempfile.NamedTemporaryFile(mode="w+", delete=False)
+    target_dir = os.path.dirname(fnf)
+    os.makedirs(target_dir, exist_ok=True)
+    tfile = tempfile.NamedTemporaryFile(mode="w+", delete=False, dir=target_dir)
     json.dump(ens_data, tfile, indent=2)
     tfile.flush()
     os.fsync(tfile.fileno())  # Ensure data is written to disk

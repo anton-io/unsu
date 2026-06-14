@@ -54,7 +54,7 @@ const networkConfigs = {
     rpcs: [
       {
         name: 'Ethereum',
-        url: 'https://cloudflare-eth.com',
+        url: 'https://eth.api.pocket.network',
         icon: 'https://assets.coingecko.com/coins/images/279/standard/ethereum.png',
         chainId: 1,
         ensAddress: '0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e'
