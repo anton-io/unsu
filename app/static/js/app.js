@@ -35,7 +35,8 @@ const networkConfigs = {
         symbol: 'ETH',
         decimals: 18,
         priceFeed: '0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419',
-        icon: 'https://assets.coingecko.com/coins/images/279/standard/ethereum.png'
+        icon: 'https://assets.coingecko.com/coins/images/279/standard/ethereum.png',
+        excludeChains: [5042002]
       },
       {
         name: 'USD Coin',
@@ -44,7 +45,31 @@ const networkConfigs = {
         address: '0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238',
         priceFeed: '0x8fFfFfd4AfB6115b954Bd326cbe7B4BA576818f6',
         icon: 'https://assets.coingecko.com/coins/images/6319/standard/usdc.png',
-        excludeChains: [5042002]
+        chainId: 11155111
+      },
+      {
+        name: 'USD Coin',
+        symbol: 'USDC',
+        decimals: 6,
+        address: '0x75faf114eafb1BDbe2F0316DF893fd58CE46AA4d',
+        icon: 'https://assets.coingecko.com/coins/images/6319/standard/usdc.png',
+        chainId: 421614
+      },
+      {
+        name: 'USD Coin',
+        symbol: 'USDC',
+        decimals: 6,
+        address: '0x036CbD53842c5426634e7929541eC2318f3dCF7e',
+        icon: 'https://assets.coingecko.com/coins/images/6319/standard/usdc.png',
+        chainId: 84532
+      },
+      {
+        name: 'USD Coin',
+        symbol: 'USDC',
+        decimals: 6,
+        address: '0x3600000000000000000000000000000000000000',
+        icon: 'https://assets.coingecko.com/coins/images/6319/standard/usdc.png',
+        chainId: 5042002
       },
       {
         name: 'Wrapped Bitcoin',
@@ -54,14 +79,6 @@ const networkConfigs = {
         priceFeed: '0x1b44F3514812d835EB1BDB0acB33d3fA3351Ee43',
         icon: 'https://assets.coingecko.com/coins/images/7598/standard/wrapped_bitcoin_wbtc.png',
         excludeChains: [5042002]
-      },
-      {
-        name: 'USD Coin',
-        symbol: 'USDC',
-        decimals: 6,
-        address: '0x3600000000000000000000000000000000000000',
-        icon: 'https://assets.coingecko.com/coins/images/6319/standard/usdc.png',
-        chainId: 5042002
       }
     ]
   },
@@ -102,7 +119,24 @@ const networkConfigs = {
         decimals: 6,
         address: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
         priceFeed: '0x8fFfFfd4AfB6115b954Bd326cbe7B4BA576818f6',
-        icon: 'https://assets.coingecko.com/coins/images/6319/standard/usdc.png'
+        icon: 'https://assets.coingecko.com/coins/images/6319/standard/usdc.png',
+        chainId: 1
+      },
+      {
+        name: 'USD Coin',
+        symbol: 'USDC',
+        decimals: 6,
+        address: '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
+        icon: 'https://assets.coingecko.com/coins/images/6319/standard/usdc.png',
+        chainId: 42161
+      },
+      {
+        name: 'USD Coin',
+        symbol: 'USDC',
+        decimals: 6,
+        address: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
+        icon: 'https://assets.coingecko.com/coins/images/6319/standard/usdc.png',
+        chainId: 8453
       },
       {
         name: 'Wrapped Bitcoin',
@@ -110,7 +144,16 @@ const networkConfigs = {
         decimals: 8,
         address: '0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599',
         priceFeed: '0xF4030086522a5bEEa4988F8cA5B36dbC97BeE88c',
-        icon: 'https://assets.coingecko.com/coins/images/7598/standard/wrapped_bitcoin_wbtc.png'
+        icon: 'https://assets.coingecko.com/coins/images/7598/standard/wrapped_bitcoin_wbtc.png',
+        chainId: 1
+      },
+      {
+        name: 'Wrapped Bitcoin',
+        symbol: 'WBTC',
+        decimals: 8,
+        address: '0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f',
+        icon: 'https://assets.coingecko.com/coins/images/7598/standard/wrapped_bitcoin_wbtc.png',
+        chainId: 42161
       }
     ]
   }
