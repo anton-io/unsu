@@ -18,7 +18,8 @@ Open a browser. Enter your secret phrase. Send or receive value. That's it.
 - **No accounts** - No emails, no passwords, no verification
 - **No extensions** - No MetaMask, no plugins, no popups
 - **No custody** - Private keys never leave your browser
-- **Multi-chain** - Ethereum, Base, and Arbitrum in one interface
+- **Multi-chain** - Ethereum, Base, Arbitrum, and Arc in one interface
+- **Bridge USDC** - Move USDC between chains via Circle's CCTP, directly from the wallet
 - **ENS names** - Send to human-readable names (alice.unsu.eth) instead of hex addresses
 - **QR codes** - Scan to send, share to receive
 - **Testnet + Mainnet** - Practice safely before using real funds
@@ -35,6 +36,25 @@ Open a browser. Enter your secret phrase. Send or receive value. That's it.
 ### Receive
 
 1. Share your address, ENS name, or QR code
+
+### Bridge USDC
+
+1. Select the source chain in Settings > Chains
+2. Click Bridge
+3. Choose a destination chain and enter the USDC amount
+4. Confirm - the wallet handles approval, burn, attestation, and mint automatically
+
+Bridging uses Circle's Cross-Chain Transfer Protocol (CCTP). USDC is burned on the source chain, Circle signs an attestation, and equivalent USDC is minted on the destination. No wrapped tokens, no liquidity pools, no slippage.
+
+Supported routes (testnet): Ethereum Sepolia, Arbitrum Sepolia, Base Sepolia, Arc Testnet. Mainnet: Ethereum, Arbitrum, Base.
+
+If you close the browser during the attestation wait (typically 1-5 minutes), your bridge progress is saved. The wallet will prompt you to resume when you return.
+
+## Arc Network
+
+Arc is a chain where USDC is the native gas token - you pay transaction fees in USDC instead of ETH. This eliminates the need to hold a separate token just for gas, making it simpler for users who primarily transact in stablecoins.
+
+unsu supports Arc Testnet with built-in CCTP bridging, so you can move USDC from Ethereum Sepolia (or other testnets) directly to Arc and start transacting immediately.
 
 ## Quick Start
 

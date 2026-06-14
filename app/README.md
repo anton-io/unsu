@@ -37,9 +37,10 @@ For project overview, see the [root README](../README.md).
 ### Key Design Decisions
 
 1. **Client-Side Wallet** - Private keys derived from seed phrase via keccak256 iterations, never leave the browser
-2. **Multi-Chain** - Ethereum, Base, Arbitrum with testnet/mainnet toggle
-3. **ENS Resolution** - Server proxies to external ENS API with local JSON fallback (`data/data.json`)
-4. **Minimal Dependencies** - Frontend: ethers.js, html5-qrcode. Backend: Flask, Flask-CORS, Flask-Compress
+2. **Multi-Chain** - Ethereum, Base, Arbitrum, and Arc with testnet/mainnet toggle
+3. **CCTP Bridging** - USDC bridging via Circle's Cross-Chain Transfer Protocol, implemented as direct contract calls (no SDK)
+4. **ENS Resolution** - Server proxies to external ENS API with local JSON fallback (`data/data.json`)
+5. **Minimal Dependencies** - Frontend: ethers.js, html5-qrcode. Backend: Flask, Flask-CORS, Flask-Compress
 
 ---
 
@@ -141,6 +142,51 @@ Environment variables (set in `.env` at project root, loaded via python-dotenv):
 ### Frontend Configuration
 
 Network configs (RPC endpoints, chain IDs, assets) are defined in `static/js/app.js` in the `networkConfigs` object. To add a chain or token, edit that object.
+
+---
+
+## CCTP Bridge
+
+The wallet supports bridging USDC between chains using Circle's Cross-Chain Transfer Protocol (CCTP V2). The implementation uses direct smart contract calls via ethers.js with no additional SDK.
+
+### How It Works
+
+1. **Approve** - ERC-20 approve of USDC spend to the TokenMessenger contract
+2. **Burn** - Call `depositForBurn` on TokenMessenger, which burns USDC on the source chain
+3. **Attest** - Poll Circle's Iris attestation API until the burn is signed
+4. **Mint** - Call `receiveMessage` on the destination chain's MessageTransmitter to mint USDC
+
+Since wallet keys are derived client-side and work on all EVM chains, the mint step executes automatically without requiring the user to switch networks.
+
+### Supported Chains
+
+| Chain | Domain ID | Testnet Chain ID | Mainnet Chain ID |
+|-------|-----------|-----------------|-----------------|
+| Ethereum | 0 | 11155111 (Sepolia) | 1 |
+| Arbitrum | 3 | 421614 (Sepolia) | 42161 |
+| Base | 6 | 84532 (Sepolia) | 8453 |
+| Arc | 26 | 5042002 | - |
+
+### Contract Addresses
+
+**Testnet** (shared across all testnet chains):
+- TokenMessengerV2: `0x8FE6B999Dc680CcFDD5Bf7EB0974218be2542DAA`
+- MessageTransmitterV2: `0xE737e5cEBEEBa77EFE34D4aa090756590b1CE275`
+
+**Mainnet** (shared across all mainnet chains):
+- TokenMessengerV2: `0x28b5a0e9C621a5BadaA536219b3a228C8168cf5d`
+- MessageTransmitterV2: `0x81D40F21F12A8F0E3252Bccb954D722d4c464B64`
+
+### Attestation API
+
+- Testnet: `https://iris-api-sandbox.circle.com/v2/messages/{sourceDomain}?transactionHash={hash}`
+- Mainnet: `https://iris-api.circle.com/v2/messages/{sourceDomain}?transactionHash={hash}`
+
+Attestation typically takes 1-5 minutes. Bridge state is persisted to localStorage so users can close and resume.
+
+### Arc Network
+
+Arc uses USDC as its native gas token instead of ETH. This means users pay transaction fees in USDC, removing the need to acquire a separate token for gas. The wallet includes Arc Testnet with its USDC contract (`0x3600000000000000000000000000000000000000`) and supports bridging USDC to/from Arc via CCTP.
 
 ---
 
