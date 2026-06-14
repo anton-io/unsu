@@ -1,50 +1,62 @@
-## unsu.com - A Wallet Everyone Can Use.
+# unsu.com
 
-## Motivation
+A crypto wallet that works in any browser. No apps, no extensions, no accounts.
 
-In an era where the utilization of cryptocurrency is becoming increasingly convoluted, our solution is to simplify the process.
+## The Problem
 
-The crypto landscape is currently cluttered with an overwhelming array of options, exhaustive verification processes, and a proliferation of chains, coins, and exchanges, not to mention the ever-present risk of scams. 
+Sending and receiving crypto today requires navigating app stores, browser extensions, identity verification, multi-step authentication, and dozens of confusing options. Most people give up before their first transaction.
 
-Our project's goal is to cut through this noise, offering a streamlined, user-friendly platform that demystifies crypto transactions.
+## The Solution
 
-We envision a tool that empowers users globally to unlock and transact value simply with a secret phrase (s-phrase), accessible via any basic web browser on the simplest of devices. 
+Open a browser. Enter your secret phrase. Send or receive value. That's it.
 
-Our platform is designed to facilitate the sending and receiving of value with minimal steps, ensuring that even those new to crypto can engage with it effortlessly.
+**Live at https://unsu.com**
 
-## Live website
+## Why unsu
 
-A live demo of this project can be accessed using any modern website at: https://unsu.com
+- **No downloads** - Works in any modern browser on any device
+- **No accounts** - No emails, no passwords, no verification
+- **No extensions** - No MetaMask, no plugins, no popups
+- **No custody** - Private keys never leave your browser
+- **Multi-chain** - Ethereum, Base, and Arbitrum in one interface
+- **ENS names** - Send to human-readable names (alice.unsu.eth) instead of hex addresses
+- **QR codes** - Scan to send, share to receive
+- **Testnet + Mainnet** - Practice safely before using real funds
 
-## Features
+## How It Works
 
-### Sending Crypto
+### Send
 
-1. **Unlock Wallet**: Access your wallet instantly using your s-phrase. No cumbersome emails, account logins, multi-step authentication, or waiting for approvals.
+1. Enter your secret phrase to unlock your wallet
+2. Enter a destination (ENS name, address, or scan a QR code)
+3. Choose asset and amount
+4. Send
 
-2. **Destination Address**: Easily input the destination address by using ENS, pasting the address directly, or scanning a QR code.
+### Receive
 
-3. **Amount**: Specify the amount you wish to send.
+1. Share your address, ENS name, or QR code
 
-4. **Send**: Execute the transaction with a single click, without the need for additional wallets or plugins like MetaMask.
+## Quick Start
 
+```bash
+./_start dev
+# Open http://localhost:3333
+```
 
-### Receiving Crypto
-Receive value seamlessly. 
+See [app/README.md](app/README.md) for full technical documentation.
 
-1. Your address (using ENS, QR code, or standard address) is readily accessible, making the process of receiving crypto straightforward.
+## Security Model
 
+- Wallet keys are derived client-side and never transmitted
+- No server-side storage of secrets
+- No user accounts or sessions
+- ENS data (name-to-address mappings) is public
+- Designed for everyday transactions, not cold storage
 
-## Objective
+## Contributing
 
-Our primary aim is to democratize the use of cryptocurrency, making it accessible to a broader audience. 
+Contributions welcome. See [app/README.md](app/README.md) for architecture details and development setup.
 
-We acknowledge the trade-offs between user-friendliness and security, especially given our focus on facilitating small, everyday transactions that typically involve faster, less costly, and potentially less secure methods. 
+## License
 
-By eliminating unnecessary complexities and dependencies, we aspire to introduce a new wave of users to the crypto ecosystem, fostering a more inclusive and simplified experience.
-
-
-## Contribution
-We welcome contributions from the community to make our vision a reality. Whether you're a developer, a designer, or just someone with great ideas, your input can help shape the future of accessible crypto transactions.
-
-By focusing on simplicity and user-centric design, we aim to transform the crypto experience, making it as straightforward as sending an email. Join us in our journey to redefine the way we interact with digital value.
+See [LICENSE](LICENSE).

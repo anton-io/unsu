@@ -1,0 +1,60 @@
+version: '3.8'
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: unsu-web
+    ports:
+      - "3333:3333"
+    volumes:
+      - ./data:/data
+      - ./frontend:/app/frontend:ro
+    environment:
+      - PORT=3333
+      - HOST=0.0.0.0
+      - FLASK_DEBUG=${FLASK_DEBUG:-false}
+      - ENVIRONMENT=${ENVIRONMENT:-production}
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3333/"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 10s
+    networks:
+      - unsu-network
+
+  ens:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: unsu-ens
+    command: python3 ens/manager.py
+    ports:
+      - "3334:3334"
+    volumes:
+      - ./data:/data
+      - ./ens:/app/ens:ro
+    environment:
+      - PORT=3334
+      - HOST=0.0.0.0
+      - FLASK_DEBUG=${FLASK_DEBUG:-false}
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3334/"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 10s
+    networks:
+      - unsu-network
+
+networks:
+  unsu-network:
+    driver: bridge
+
+volumes:
+  data:
+    driver: local

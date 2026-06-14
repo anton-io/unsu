@@ -1,4 +1,236 @@
-#!/bin/bash
-DIR="$( cd -P "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-( sleep 3; open http://localhost:8080 ) &
-$DIR/www_server
+#!/usr/bin/env bash
+
+# unsu.com - Management Script.
+# Based on GUIDE.md specification v2.0
+
+set -euo pipefail
+
+# Colors for output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+BLUE='\033[0;34m'
+YELLOW='\033[0;33m'
+NC='\033[0m' # No Color
+
+# Universal symbols
+CHECK="✓"
+CROSS="✗"
+INFO="ℹ"
+WARNING="⚠"
+
+# Project directory
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+cd "$SCRIPT_DIR"
+
+# Helper functions
+log_info() {
+    echo -e "${BLUE}${INFO}${NC} $1"
+}
+
+log_success() {
+    echo -e "${GREEN}${CHECK}${NC} $1"
+}
+
+log_error() {
+    echo -e "${RED}${CROSS}${NC} $1"
+}
+
+log_warning() {
+    echo -e "${YELLOW}${WARNING}${NC} $1"
+}
+
+# Command functions
+cmd_up() {
+    log_info "Starting unsu.com services..."
+
+    if [ -f "app/docker-compose.yml" ]; then
+        cd app && docker-compose up -d
+        log_success "Services started successfully"
+        log_info "Web: http://localhost:3333"
+    else
+        log_info "Running in development mode (no Docker)"
+
+        # Start web server (includes ENS API)
+        if [ -f "app/server.py" ]; then
+            log_info "Starting web server..."
+            python3 app/server.py
+        else
+            log_error "server.py not found"
+            exit 1
+        fi
+    fi
+}
+
+cmd_down() {
+    log_info "Stopping unsu.com services..."
+
+    if [ -f "app/docker-compose.yml" ]; then
+        cd app && docker-compose down
+        log_success "Services stopped successfully"
+    else
+        # Kill web server process
+        pkill -f "app/server.py" 2>/dev/null && log_success "Web server stopped" || true
+    fi
+}
+
+cmd_restart() {
+    log_info "Restarting unsu.com services..."
+    cmd_down
+    sleep 2
+    cmd_up
+}
+
+cmd_status() {
+    log_info "Checking service status..."
+
+    if [ -f "app/docker-compose.yml" ]; then
+        cd app && docker-compose ps
+    else
+        # Check web server
+        if pgrep -f "app/server.py" > /dev/null; then
+            log_success "Web server running (PID: $(pgrep -f 'app/server.py'))"
+        else
+            log_warning "Web server not running"
+        fi
+
+        # Check HTTP endpoints
+        if curl -s http://localhost:3333 > /dev/null 2>&1; then
+            log_success "Web server responding on :3333 (includes ENS API)"
+        else
+            log_warning "Web server not responding on :3333"
+        fi
+    fi
+}
+
+cmd_logs() {
+    if [ -f "app/docker-compose.yml" ]; then
+        cd app && docker-compose logs "$@"
+    else
+        log_warning "Logs only available in Docker mode"
+        log_info "For development logs, run services in foreground"
+    fi
+}
+
+cmd_build() {
+    log_info "Building Docker images..."
+
+    if [ -f "app/Dockerfile" ]; then
+        cd app && docker-compose build
+        log_success "Docker images built successfully"
+    else
+        log_error "Dockerfile not found"
+        exit 1
+    fi
+}
+
+cmd_dev() {
+    log_info "Starting development server..."
+
+    # Stop any running instances first
+    pkill -f "app/server.py" 2>/dev/null || true
+
+    # Start web server in foreground with debug mode (includes ENS API)
+    if [ -f "app/server.py" ]; then
+        log_success "Starting web server on :3333 (debug mode, includes ENS API)"
+        log_info "Press Ctrl+C to stop"
+        echo ""
+        export FLASK_DEBUG=true
+        cd app && python3 server.py
+    else
+        log_error "server.py not found"
+        exit 1
+    fi
+}
+
+cmd_clean() {
+    log_info "Cleaning up resources..."
+
+    # Stop services
+    cmd_down
+
+    # Clean Docker resources
+    if [ -f "app/docker-compose.yml" ]; then
+        log_info "Removing Docker containers and volumes..."
+        cd app && docker-compose down -v
+        log_success "Docker resources cleaned"
+    fi
+
+    # Clean Python cache
+    find . -type d -name "__pycache__" -exec rm -r {} + 2>/dev/null || true
+    find . -type f -name "*.pyc" -delete 2>/dev/null || true
+    log_success "Python cache cleaned"
+
+    log_success "Cleanup complete"
+}
+
+cmd_help() {
+    cat << EOF
+unsu.com - Management Script
+
+USAGE:
+    ./_start COMMAND [OPTIONS]
+
+COMMANDS:
+    dev         Start development server (debug mode, foreground)
+    up          Start the service (Docker or background)
+    down        Stop the service
+    restart     Restart the service
+    status      Check service status
+    logs        View logs (Docker mode only)
+    build       Build Docker containers
+    clean       Clean up resources
+    help        Show this help message
+
+EXAMPLES:
+    ./_start dev            # Start in development mode (recommended)
+    ./_start up             # Start services (Docker or background)
+    ./_start logs -f        # Follow logs
+    ./_start clean          # Clean everything
+
+DEVELOPMENT MODE:
+    The 'dev' command runs the web server (includes ENS API) with:
+    - FLASK_DEBUG=true (auto-reload on code changes)
+    - Server runs in foreground (see logs immediately)
+    - Press Ctrl+C to stop
+
+For more information, see app/README.md
+EOF
+}
+
+# Main command router
+case "${1:-help}" in
+    dev)
+        cmd_dev
+        ;;
+    up|start)
+        cmd_up
+        ;;
+    down|stop)
+        cmd_down
+        ;;
+    restart)
+        cmd_restart
+        ;;
+    status)
+        cmd_status
+        ;;
+    logs)
+        shift
+        cmd_logs "$@"
+        ;;
+    build)
+        cmd_build
+        ;;
+    clean)
+        cmd_clean
+        ;;
+    help|--help|-h)
+        cmd_help
+        ;;
+    *)
+        log_error "Unknown command: $1"
+        echo ""
+        cmd_help
+        exit 1
+        ;;
+esac

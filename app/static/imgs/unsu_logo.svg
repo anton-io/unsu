@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="166.92622mm"
+   height="47.247208mm"
+   viewBox="0 0 166.92622 47.247208"
+   version="1.1"
+   id="svg1"
+   inkscape:version="1.4.3 (0d15f75, 2025-12-25)"
+   sodipodi:docname="unsu_unsu_logo.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     inkscape:zoom="1.2711951"
+     inkscape:cx="338.26437"
+     inkscape:cy="118.78586"
+     inkscape:window-width="1822"
+     inkscape:window-height="1249"
+     inkscape:window-x="2719"
+     inkscape:window-y="1654"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs1">
+    <filter
+       style="color-interpolation-filters:sRGB"
+       inkscape:label="Invert"
+       id="filter6"
+       x="0"
+       y="0"
+       width="1"
+       height="1">
+      <feColorMatrix
+         values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 -0.21 -0.72 -0.07 2 0 "
+         result="fbSourceGraphic"
+         id="feColorMatrix6" />
+      <feColorMatrix
+         result="fbSourceGraphicAlpha"
+         in="fbSourceGraphic"
+         values="0 0 0 -1 0 0 0 0 -1 0 0 0 0 -1 0 0 0 0 1 0"
+         id="feColorMatrix8" />
+      <feColorMatrix
+         id="feColorMatrix9"
+         values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 -0.21 -0.72 -0.07 2 0 "
+         result="fbSourceGraphic"
+         in="fbSourceGraphic" />
+      <feColorMatrix
+         result="fbSourceGraphicAlpha"
+         in="fbSourceGraphic"
+         values="0 0 0 -1 0 0 0 0 -1 0 0 0 0 -1 0 0 0 0 1 0"
+         id="feColorMatrix12" />
+      <feColorMatrix
+         id="feColorMatrix13"
+         values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 -0.21 -0.72 -0.07 2 0 "
+         result="color2"
+         in="fbSourceGraphic" />
+    </filter>
+  </defs>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-21.536888,-124.8764)">
+    <rect
+       style="display:inline;opacity:0.94;fill:#000000;fill-opacity:1;stroke-width:0.2;stroke-dasharray:none"
+       id="rect1"
+       width="166.92622"
+       height="47.247208"
+       x="21.536888"
+       y="124.8764"
+       ry="1.7209247" />
+    <path
+       style="display:inline;opacity:0.94;fill:#ffffff;fill-opacity:1;stroke-width:1.05364;filter:url(#filter6)"
+       d="m 12.395841,72.766925 20.69327,-5e-6 -3e-6,-3.146683 h -20.72845 l 0.03485,-17.234216 c 0.01813,0.02487 27.783899,0 27.783899,0 V 59.29129 H 19.462304 v 3.409177 c 0,0 20.68522,0.02254 20.717103,0 0.03632,5.254589 0,12.145561 0,17.400232 H 12.395512 Z M -57.419296,52.386021 h 7.082641 l -3e-6,20.77215 13.673563,-0.01024 -0.04104,-20.76191 h 7.068405 v 27.714678 h -27.783566 z m 34.840005,0 h 7.035827 l 13.8644434,17.84136 -0.03235,-17.84136 h 6.97003 v 27.714678 h -7.244734 l -13.5989604,-17.165793 0.05375,17.165793 h -7.048006 z m 69.815137,0 h 7.100532 l -3e-6,20.59581 13.673563,-0.01024 -0.04104,-20.58557 h 7.104898 v 27.714678 h -27.83795 z"
+       id="path1"
+       sodipodi:nodetypes="cccccccccccccccccccccccccccccccccccccccccc"
+       transform="matrix(1.1369311,0,0,1.1369311,94.964025,73.185889)"
+       inkscape:label="path1" />
+  </g>
+</svg>

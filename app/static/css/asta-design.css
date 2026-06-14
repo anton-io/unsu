@@ -1,0 +1,469 @@
+/**
+ * ASTA Design System for unsu.com
+ * Minimal, monospace UI framework
+ * Based on https://anton.io/asta
+ *
+ * Philosophy: Character grid alignment, rhythmic, intentional, precise
+ */
+
+/* ============================================
+   CORE RESET & VARIABLES
+   ============================================ */
+:root {
+    /* Colors */
+    --asta-bg: #ffffff;
+    --asta-text: #000000;
+    --asta-border: #000000;
+    --asta-accent: #ff6b35;
+    --asta-success: #2fbd6a;
+    --asta-error: #E03853;
+    --asta-gray: #E6EAF0;
+
+    /* Typography - Monospace grid */
+    --asta-font: 'JetBrains Mono', 'Courier New', monospace;
+    --asta-font-size: 16px;
+    --asta-line-height: 1.5rem;
+    --asta-char-width: 1ch;
+
+    /* Spacing - Character based */
+    --asta-space-xs: calc(var(--asta-char-width) * 2);
+    --asta-space-sm: calc(var(--asta-char-width) * 4);
+    --asta-space-md: calc(var(--asta-char-width) * 8);
+    --asta-space-lg: calc(var(--asta-char-width) * 12);
+    --asta-space-xl: calc(var(--asta-char-width) * 16);
+
+    /* Borders */
+    --asta-border-width: 2px;
+    --asta-border-radius: 0px; /* Asta is minimal, no rounded corners */
+}
+
+/* ============================================
+   BASE STYLES
+   ============================================ */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    font-family: var(--asta-font);
+    font-size: var(--asta-font-size);
+    line-height: var(--asta-line-height);
+    background-color: var(--asta-bg);
+    color: var(--asta-text);
+}
+
+body {
+    min-height: 100vh;
+}
+
+/* ============================================
+   TYPOGRAPHY
+   ============================================ */
+h1, h2, h3, h4, h5 {
+    font-weight: 700;
+    line-height: var(--asta-line-height);
+    margin-bottom: var(--asta-space-sm);
+}
+
+h1 { font-size: 2rem; }
+h2 { font-size: 1.5rem; }
+h3 { font-size: 1.25rem; }
+h4 { font-size: 1rem; font-weight: 600; }
+h5 { font-size: 1rem; }
+
+p {
+    margin-bottom: var(--asta-space-sm);
+}
+
+strong { font-weight: 600; }
+em { font-style: italic; }
+
+code {
+    font-family: var(--asta-font);
+    background-color: var(--asta-gray);
+    padding: 0 calc(var(--asta-char-width) * 1);
+}
+
+/* ============================================
+   BUTTONS
+   ============================================ */
+button, .btn {
+    font-family: var(--asta-font);
+    font-size: var(--asta-font-size);
+    padding: var(--asta-space-xs) var(--asta-space-sm);
+    background-color: var(--asta-text);
+    color: var(--asta-bg);
+    border: var(--asta-border-width) solid var(--asta-border);
+    cursor: pointer;
+    transition: opacity 0.15s ease;
+    text-align: center;
+    display: inline-block;
+    min-width: calc(var(--asta-char-width) * 12);
+}
+
+button:hover, .btn:hover {
+    opacity: 0.8;
+}
+
+button:active, .btn:active {
+    opacity: 0.6;
+}
+
+button:disabled, .btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+button.btn-secondary {
+    background-color: var(--asta-bg);
+    color: var(--asta-text);
+}
+
+button.btn-danger {
+    background-color: var(--asta-error);
+    border-color: var(--asta-error);
+}
+
+button.btn-success {
+    background-color: var(--asta-success);
+    border-color: var(--asta-success);
+}
+
+/* ============================================
+   FORMS
+   ============================================ */
+input, textarea, select {
+    font-family: var(--asta-font);
+    font-size: var(--asta-font-size);
+    padding: var(--asta-space-xs);
+    border: var(--asta-border-width) solid var(--asta-border);
+    background-color: var(--asta-bg);
+    color: var(--asta-text);
+    width: 100%;
+    outline: none;
+}
+
+input:focus, textarea:focus, select:focus {
+    border-color: var(--asta-accent);
+}
+
+textarea {
+    resize: vertical;
+    min-height: calc(var(--asta-line-height) * 4);
+}
+
+input[type="checkbox"],
+input[type="radio"] {
+    width: auto;
+    margin-right: var(--asta-space-xs);
+}
+
+label {
+    display: block;
+    margin-bottom: calc(var(--asta-char-width) * 1);
+}
+
+/* ============================================
+   MODALS
+   ============================================ */
+.asta-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+}
+
+.asta-modal.active {
+    display: flex;
+}
+
+.asta-modal-content {
+    background-color: var(--asta-bg);
+    border: var(--asta-border-width) solid var(--asta-border);
+    max-width: 600px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+}
+
+.asta-modal-header {
+    padding: var(--asta-space-sm);
+    border-bottom: var(--asta-border-width) solid var(--asta-border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.asta-modal-title {
+    font-weight: 600;
+    margin: 0;
+}
+
+.asta-modal-close {
+    cursor: pointer;
+    font-size: 1.5rem;
+    background: none;
+    border: none;
+    padding: 0;
+    min-width: auto;
+    line-height: 1;
+}
+
+.asta-modal-body {
+    padding: var(--asta-space-sm);
+}
+
+.asta-modal-footer {
+    padding: var(--asta-space-sm);
+    border-top: var(--asta-border-width) solid var(--asta-border);
+    display: flex;
+    gap: var(--asta-space-xs);
+    justify-content: flex-end;
+}
+
+/* Modal variants */
+.asta-modal.error .asta-modal-header {
+    background-color: var(--asta-error);
+    color: var(--asta-bg);
+}
+
+.asta-modal.success .asta-modal-header {
+    background-color: var(--asta-success);
+    color: var(--asta-bg);
+}
+
+.asta-modal.warning .asta-modal-header {
+    background-color: var(--asta-accent);
+    color: var(--asta-bg);
+}
+
+/* ============================================
+   GRID SYSTEM (12-column)
+   ============================================ */
+.asta-container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 var(--asta-space-sm);
+}
+
+.asta-row {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0 calc(var(--asta-space-xs) * -1);
+}
+
+.asta-col {
+    padding: 0 var(--asta-space-xs);
+}
+
+/* Column widths */
+.asta-col-1 { width: 8.333%; }
+.asta-col-2 { width: 16.666%; }
+.asta-col-3 { width: 25%; }
+.asta-col-4 { width: 33.333%; }
+.asta-col-5 { width: 41.666%; }
+.asta-col-6 { width: 50%; }
+.asta-col-7 { width: 58.333%; }
+.asta-col-8 { width: 66.666%; }
+.asta-col-9 { width: 75%; }
+.asta-col-10 { width: 83.333%; }
+.asta-col-11 { width: 91.666%; }
+.asta-col-12 { width: 100%; }
+
+/* ============================================
+   UTILITIES
+   ============================================ */
+.asta-border {
+    border: var(--asta-border-width) solid var(--asta-border);
+}
+
+.asta-border-top {
+    border-top: var(--asta-border-width) solid var(--asta-border);
+}
+
+.asta-border-bottom {
+    border-bottom: var(--asta-border-width) solid var(--asta-border);
+}
+
+.asta-text-center { text-align: center; }
+.asta-text-right { text-align: right; }
+
+.asta-hidden { display: none; }
+.asta-block { display: block; }
+.asta-inline { display: inline; }
+.asta-flex { display: flex; }
+
+.asta-m-0 { margin: 0; }
+.asta-m-xs { margin: var(--asta-space-xs); }
+.asta-m-sm { margin: var(--asta-space-sm); }
+.asta-m-md { margin: var(--asta-space-md); }
+.asta-m-lg { margin: var(--asta-space-lg); }
+
+.asta-p-0 { padding: 0; }
+.asta-p-xs { padding: var(--asta-space-xs); }
+.asta-p-sm { padding: var(--asta-space-sm); }
+.asta-p-md { padding: var(--asta-space-md); }
+.asta-p-lg { padding: var(--asta-space-lg); }
+
+.asta-mt-xs { margin-top: var(--asta-space-xs); }
+.asta-mt-sm { margin-top: var(--asta-space-sm); }
+.asta-mt-md { margin-top: var(--asta-space-md); }
+.asta-mt-lg { margin-top: var(--asta-space-lg); }
+
+.asta-mb-xs { margin-bottom: var(--asta-space-xs); }
+.asta-mb-sm { margin-bottom: var(--asta-space-sm); }
+.asta-mb-md { margin-bottom: var(--asta-space-md); }
+.asta-mb-lg { margin-bottom: var(--asta-space-lg); }
+
+/* ============================================
+   TABLES
+   ============================================ */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: var(--asta-font);
+}
+
+th, td {
+    padding: var(--asta-space-xs);
+    text-align: left;
+    border-bottom: var(--asta-border-width) solid var(--asta-border);
+}
+
+th {
+    font-weight: 600;
+    background-color: var(--asta-gray);
+}
+
+tr:last-child td {
+    border-bottom: none;
+}
+
+/* ============================================
+   CARDS
+   ============================================ */
+.asta-card {
+    border: var(--asta-border-width) solid var(--asta-border);
+    padding: var(--asta-space-sm);
+    margin-bottom: var(--asta-space-sm);
+}
+
+.asta-card-header {
+    font-weight: 600;
+    margin-bottom: var(--asta-space-xs);
+    padding-bottom: var(--asta-space-xs);
+    border-bottom: var(--asta-border-width) solid var(--asta-border);
+}
+
+.asta-card-body {
+    padding: var(--asta-space-xs) 0;
+}
+
+/* ============================================
+   MESSAGES / ALERTS
+   ============================================ */
+.asta-message {
+    padding: var(--asta-space-sm);
+    border: var(--asta-border-width) solid var(--asta-border);
+    margin-bottom: var(--asta-space-sm);
+}
+
+.asta-message.success {
+    background-color: var(--asta-success);
+    color: var(--asta-bg);
+    border-color: var(--asta-success);
+}
+
+.asta-message.error {
+    background-color: var(--asta-error);
+    color: var(--asta-bg);
+    border-color: var(--asta-error);
+}
+
+.asta-message.warning {
+    background-color: var(--asta-accent);
+    color: var(--asta-bg);
+    border-color: var(--asta-accent);
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+@media (max-width: 768px) {
+    :root {
+        --asta-font-size: 14px;
+    }
+
+    [class*="asta-col-"] {
+        width: 100%;
+    }
+
+    .asta-modal-content {
+        width: 95%;
+    }
+}
+
+/* ============================================
+   ANIMATIONS (Minimal)
+   ============================================ */
+@keyframes asta-fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.asta-fade-in {
+    animation: asta-fade-in 0.2s ease;
+}
+
+/* ============================================
+   DETAILS / COLLAPSIBLE
+   ============================================ */
+details {
+    border: var(--asta-border-width) solid var(--asta-border);
+    padding: var(--asta-space-xs);
+    margin-bottom: var(--asta-space-xs);
+}
+
+summary {
+    cursor: pointer;
+    font-weight: 600;
+    padding: var(--asta-space-xs);
+    margin: calc(var(--asta-space-xs) * -1);
+    user-select: none;
+}
+
+summary:hover {
+    background-color: var(--asta-gray);
+}
+
+details[open] summary {
+    border-bottom: var(--asta-border-width) solid var(--asta-border);
+    margin-bottom: var(--asta-space-xs);
+}
+
+/* ============================================
+   LOADING SPINNER (Minimal)
+   ============================================ */
+.asta-spinner {
+    display: inline-block;
+    width: calc(var(--asta-char-width) * 3);
+    height: calc(var(--asta-char-width) * 3);
+    border: var(--asta-border-width) solid var(--asta-gray);
+    border-top-color: var(--asta-text);
+    border-radius: 50%;
+    animation: asta-spin 0.8s linear infinite;
+}
+
+@keyframes asta-spin {
+    to { transform: rotate(360deg); }
+}
