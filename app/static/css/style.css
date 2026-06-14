@@ -264,7 +264,7 @@ button:hover {
 }
 
 .container-buttons button {
-  width: calc(50% - 5px);
+  width: calc(33.33% - 7px);
 }
 
 #details-address,
@@ -974,7 +974,7 @@ body.share {
   border-radius: var(--border-radius);
   box-shadow: var(--card-shadow-light);
   margin-bottom: 20px;
-  font-size: 0.8em;
+  font-size: 0.7em;
 }
 
 #settings-details-key::after {
@@ -1280,4 +1280,116 @@ body.share {
     width: 100%;
     justify-content: flex-end;
   }
+}
+
+/* Bridge Steps */
+.bridge-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.bridge-step {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 15px;
+  border-radius: var(--border-radius);
+  background-color: var(--white);
+  box-shadow: var(--box-shadow-light);
+  color: var(--text-secondary);
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+.bridge-step-icon {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  border: 2px solid var(--border-color);
+  position: relative;
+}
+
+.bridge-step.active {
+  color: var(--text-primary);
+  font-weight: 500;
+  border: 1.5px solid var(--text-primary);
+}
+
+.bridge-step.active .bridge-step-icon {
+  border-color: var(--text-primary);
+  animation: spinner-rotate 0.8s linear infinite;
+  border-top-color: transparent;
+}
+
+.bridge-step.done {
+  color: var(--positive-green);
+}
+
+.bridge-step.done .bridge-step-icon {
+  border-color: var(--positive-green);
+  background-color: var(--positive-green);
+}
+
+.bridge-step.done .bridge-step-icon::after {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 5px;
+  width: 5px;
+  height: 9px;
+  border: solid #fff;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+.bridge-step.error {
+  color: var(--negative-red);
+}
+
+.bridge-step.error .bridge-step-icon {
+  border-color: var(--negative-red);
+  background-color: var(--negative-red);
+}
+
+/* Bridge pending banner */
+.bridge-pending-banner {
+  position: fixed;
+  bottom: 80px;
+  left: 30px;
+  right: 30px;
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 15px 20px;
+  background-color: var(--card-bg);
+  border: 1.5px solid var(--text-primary);
+  border-radius: var(--border-radius);
+  box-shadow: var(--card-shadow);
+  cursor: pointer;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  animation: slideInFromRight 0.3s ease-out;
+}
+
+.bridge-pending-banner:hover {
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+}
+
+.bridge-pending-spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid var(--border-color);
+  border-radius: 50%;
+  border-top-color: var(--text-primary);
+  animation: spinner-rotate 0.8s linear infinite;
+  flex-shrink: 0;
+}
+
+.bridge-pending-text {
+  font-size: 14px;
+  color: var(--text-primary);
 }

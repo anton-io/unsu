@@ -116,6 +116,41 @@ const networkConfigs = {
   }
 };
 
+// CCTP Bridge Configuration
+const bridgeConfig = {
+  testnet: {
+    tokenMessenger: '0x8FE6B999Dc680CcFDD5Bf7EB0974218be2542DAA',
+    messageTransmitter: '0xE737e5cEBEEBa77EFE34D4aa090756590b1CE275',
+    attestationApi: 'https://iris-api-sandbox.circle.com',
+    chains: {
+      11155111: { domain: 0, usdc: '0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238', name: 'Ethereum Sepolia' },
+      421614:   { domain: 3, usdc: '0x75faf114eafb1BDbe2F0316DF893fd58CE46AA4d', name: 'Arbitrum Sepolia' },
+      84532:    { domain: 6, usdc: '0x036CbD53842c5426634e7929541eC2318f3dCF7e', name: 'Base Sepolia' },
+      5042002:  { domain: 26, usdc: '0x3600000000000000000000000000000000000000', name: 'Arc Testnet' }
+    }
+  },
+  mainnet: {
+    tokenMessenger: '0x28b5a0e9C621a5BadaA536219b3a228C8168cf5d',
+    messageTransmitter: '0x81D40F21F12A8F0E3252Bccb954D722d4c464B64',
+    attestationApi: 'https://iris-api.circle.com',
+    chains: {
+      1:     { domain: 0, usdc: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48', name: 'Ethereum' },
+      42161: { domain: 3, usdc: '0xaf88d065e77c8cC2239327C5EDb3A432268e5831', name: 'Arbitrum' },
+      8453:  { domain: 6, usdc: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913', name: 'Base' }
+    }
+  }
+};
+
+const TOKEN_MESSENGER_ABI = [
+  'function depositForBurn(uint256 amount, uint32 destinationDomain, bytes32 mintRecipient, address burnToken, bytes32 destinationCaller, uint256 maxFee, uint32 minFinalityThreshold) returns (uint64 nonce)'
+];
+const MESSAGE_TRANSMITTER_ABI = [
+  'function receiveMessage(bytes message, bytes attestation) external returns (bool success)'
+];
+const ERC20_APPROVE_ABI = [
+  'function approve(address spender, uint256 amount) returns (bool)'
+];
+
 // Custom Chain Management
 let customChains = [];
 
@@ -1087,6 +1122,12 @@ async function login(seedPhrase) {
     document.documentElement.classList.remove('loader');
 
     resolveAddressName(wallet.address);
+
+    // Check for pending bridge after login
+    const pendingBridge = loadPendingBridge();
+    if (pendingBridge) {
+      showPendingBridgeBanner();
+    }
   } catch (error) {
     console.error('Login error:', error);
     showMessage('Login failed. Please try again.', false);
@@ -1228,7 +1269,7 @@ async function loadBalances(resetBalance = true) {
     for (let i = 0; i < visibleAssets.length; i++) {
       const asset = visibleAssets[i];
       const price = prices[i];
-      const balance = balances[i];
+      const balance = parseFloat(parseFloat(balances[i]).toFixed(6));
       const balanceUSD = price * balance;
       walletBalance += balanceUSD;
 
@@ -1635,6 +1676,370 @@ function checkAndAddLoaderClass() {
   }
 }
 
+// Bridge Management
+function getBridgeConfig() {
+  return bridgeConfig[currentNetworkMode];
+}
+
+function getSourceChainId() {
+  return rpcConfigs[currentProviderIndex]?.chainId;
+}
+
+function isBridgeSupported(chainId) {
+  const config = getBridgeConfig();
+  return config && config.chains[chainId] !== undefined;
+}
+
+function getBridgeDestinations() {
+  const config = getBridgeConfig();
+  if (!config) return [];
+  const sourceChainId = getSourceChainId();
+  return Object.entries(config.chains)
+    .filter(([chainId]) => parseInt(chainId) !== sourceChainId)
+    .map(([chainId, data]) => ({ chainId: parseInt(chainId), ...data }));
+}
+
+function getProviderForChainId(chainId) {
+  const rpc = rpcConfigs.find(r => r.chainId === chainId);
+  if (!rpc) {
+    // Check the other network mode's configs too
+    const allRpcs = networkConfigs[currentNetworkMode].rpcs;
+    const fallback = allRpcs.find(r => r.chainId === chainId);
+    if (!fallback) return null;
+    return new ethers.providers.JsonRpcProvider(fallback.url, { chainId });
+  }
+  return new ethers.providers.JsonRpcProvider(rpc.url, { chainId });
+}
+
+function addressToBytes32(address) {
+  return ethers.utils.hexZeroPad(address, 32);
+}
+
+function updateBridgeStep(step, state) {
+  const stepEl = document.querySelector(`.bridge-step[data-step="${step}"]`);
+  if (!stepEl) return;
+  stepEl.classList.remove('active', 'done', 'error');
+  if (state) stepEl.classList.add(state);
+}
+
+function resetBridgeSteps() {
+  document.querySelectorAll('.bridge-step').forEach(el => {
+    el.classList.remove('active', 'done', 'error');
+  });
+}
+
+function populateBridgeModal() {
+  const sourceChainId = getSourceChainId();
+  const config = getBridgeConfig();
+
+  // Set source chain
+  const sourceChainEl = document.getElementById('bridge-source-chain');
+  if (sourceChainEl && config?.chains[sourceChainId]) {
+    sourceChainEl.textContent = config.chains[sourceChainId].name;
+  } else if (sourceChainEl) {
+    sourceChainEl.textContent = rpcConfigs[currentProviderIndex]?.name || 'Unknown';
+  }
+
+  // Populate destination dropdown
+  const destSelect = document.getElementById('bridge-dest-chain');
+  if (!destSelect) return;
+  destSelect.innerHTML = '';
+
+  const destinations = getBridgeDestinations();
+  if (destinations.length === 0) {
+    const opt = document.createElement('option');
+    opt.value = '';
+    opt.textContent = 'No bridge destinations available';
+    destSelect.appendChild(opt);
+    return;
+  }
+
+  for (const dest of destinations) {
+    const opt = document.createElement('option');
+    opt.value = dest.chainId;
+    opt.textContent = dest.name;
+    destSelect.appendChild(opt);
+  }
+}
+
+async function pollAttestation(txHash, attestationApi, sourceDomain) {
+  const url = `${attestationApi}/v2/messages/${sourceDomain}?transactionHash=${txHash}`;
+  const maxAttempts = 180; // ~15 minutes with 5s interval
+
+  for (let i = 0; i < maxAttempts; i++) {
+    try {
+      const response = await fetch(url);
+      if (response.ok) {
+        const data = await response.json();
+        if (data.messages && data.messages.length > 0) {
+          const msg = data.messages[0];
+          if (msg.status === 'complete') {
+            return { message: msg.message, attestation: msg.attestation };
+          }
+        }
+      }
+    } catch (error) {
+      console.warn('Attestation poll error:', error.message);
+    }
+    await new Promise(resolve => setTimeout(resolve, 5000));
+  }
+  throw new Error('Attestation timed out');
+}
+
+function savePendingBridge(data) {
+  localStorage.setItem('pendingBridge', JSON.stringify(data));
+}
+
+function loadPendingBridge() {
+  try {
+    const stored = localStorage.getItem('pendingBridge');
+    return stored ? JSON.parse(stored) : null;
+  } catch {
+    return null;
+  }
+}
+
+function clearPendingBridge() {
+  localStorage.removeItem('pendingBridge');
+}
+
+function showPendingBridgeBanner() {
+  // Remove existing banner
+  const existing = document.getElementById('bridge-pending-banner');
+  if (existing) existing.remove();
+
+  const pending = loadPendingBridge();
+  if (!pending) return;
+
+  const config = bridgeConfig[pending.networkMode];
+  const destName = config?.chains[pending.destChainId]?.name || `Chain ${pending.destChainId}`;
+
+  const banner = document.createElement('div');
+  banner.id = 'bridge-pending-banner';
+  banner.className = 'bridge-pending-banner';
+  banner.innerHTML = `
+    <div class="bridge-pending-spinner"></div>
+    <div class="bridge-pending-text">Bridge to ${destName} in progress (${pending.amount} USDC)</div>
+  `;
+  banner.addEventListener('click', () => {
+    resumePendingBridge();
+  });
+
+  document.body.appendChild(banner);
+}
+
+function hidePendingBridgeBanner() {
+  const banner = document.getElementById('bridge-pending-banner');
+  if (banner) banner.remove();
+}
+
+async function resumePendingBridge() {
+  const pending = loadPendingBridge();
+  if (!pending || !wallet) return;
+
+  hidePendingBridgeBanner();
+
+  // Open bridge modal and show status
+  toggleModal('walletBridge');
+  populateBridgeModal();
+
+  const bridgeStatus = document.getElementById('bridge-status');
+  const bridgeButton = document.getElementById('bridge-confirm');
+  bridgeStatus.style.display = 'block';
+  bridgeButton.classList.add('disabled');
+  bridgeButton.innerHTML = '<span class="button-spinner"></span>Resuming...';
+
+  // Mark completed steps
+  updateBridgeStep('approve', 'done');
+  updateBridgeStep('burn', 'done');
+
+  try {
+    if (pending.status === 'attesting') {
+      updateBridgeStep('attest', 'active');
+
+      const config = bridgeConfig[pending.networkMode];
+      const sourceDomain = config.chains[pending.sourceChainId]?.domain;
+      const result = await pollAttestation(pending.burnTxHash, config.attestationApi, sourceDomain);
+
+      pending.message = result.message;
+      pending.attestation = result.attestation;
+      pending.status = 'ready_to_mint';
+      savePendingBridge(pending);
+
+      updateBridgeStep('attest', 'done');
+    }
+
+    if (pending.status === 'ready_to_mint') {
+      updateBridgeStep('mint', 'active');
+      bridgeButton.innerHTML = '<span class="button-spinner"></span>Minting...';
+
+      const config = bridgeConfig[pending.networkMode];
+      const destProvider = getProviderForChainId(pending.destChainId);
+      if (!destProvider) throw new Error('No RPC available for destination chain');
+
+      const destSigner = wallet.connect(destProvider);
+      const transmitter = new ethers.Contract(
+        config.messageTransmitter,
+        MESSAGE_TRANSMITTER_ABI,
+        destSigner
+      );
+
+      const mintTx = await transmitter.receiveMessage(pending.message, pending.attestation);
+      await mintTx.wait();
+
+      updateBridgeStep('mint', 'done');
+      clearPendingBridge();
+
+      showMessage('Bridge complete!', true);
+      await loadBalances(false);
+    }
+  } catch (error) {
+    console.error('Bridge resume error:', error);
+    const currentStep = pending.status === 'attesting' ? 'attest' : 'mint';
+    updateBridgeStep(currentStep, 'error');
+    showMessage(`Bridge failed: ${error.message || 'Unknown error'}`, false);
+  } finally {
+    bridgeButton.classList.remove('disabled');
+    bridgeButton.innerHTML = 'Bridge USDC';
+  }
+}
+
+async function bridgeUSDC() {
+  if (!wallet) {
+    showMessage('Please unlock your wallet first', false);
+    return;
+  }
+
+  const sourceChainId = getSourceChainId();
+  const config = getBridgeConfig();
+  if (!config || !config.chains[sourceChainId]) {
+    showMessage('Current chain does not support CCTP bridging', false);
+    return;
+  }
+
+  const destChainId = parseInt(document.getElementById('bridge-dest-chain').value);
+  if (!destChainId || !config.chains[destChainId]) {
+    showMessage('Please select a destination chain', false);
+    return;
+  }
+
+  const amount = document.getElementById('bridge-amount').value.trim();
+  if (!amount || parseFloat(amount) <= 0) {
+    showMessage('Please enter a valid amount', false);
+    return;
+  }
+
+  const sourceConfig = config.chains[sourceChainId];
+  const destConfig = config.chains[destChainId];
+  const usdcAmount = ethers.utils.parseUnits(amount, 6); // USDC has 6 decimals
+
+  const bridgeButton = document.getElementById('bridge-confirm');
+  const bridgeStatus = document.getElementById('bridge-status');
+  bridgeButton.classList.add('disabled');
+  bridgeStatus.style.display = 'block';
+  resetBridgeSteps();
+
+  try {
+    // Step 1: Approve
+    updateBridgeStep('approve', 'active');
+    bridgeButton.innerHTML = '<span class="button-spinner"></span>Approving...';
+
+    const signer = wallet.connect(provider);
+    const usdc = new ethers.Contract(sourceConfig.usdc, ERC20_APPROVE_ABI, signer);
+    const approveTx = await usdc.approve(config.tokenMessenger, usdcAmount);
+    await approveTx.wait();
+
+    updateBridgeStep('approve', 'done');
+
+    // Step 2: Burn (depositForBurn)
+    updateBridgeStep('burn', 'active');
+    bridgeButton.innerHTML = '<span class="button-spinner"></span>Burning...';
+
+    const tokenMessenger = new ethers.Contract(
+      config.tokenMessenger,
+      TOKEN_MESSENGER_ABI,
+      signer
+    );
+
+    const mintRecipient = addressToBytes32(wallet.address);
+    const destinationCaller = ethers.constants.HashZero; // Allow any caller to mint
+    const burnTx = await tokenMessenger.depositForBurn(
+      usdcAmount,
+      destConfig.domain,
+      mintRecipient,
+      sourceConfig.usdc,
+      destinationCaller,
+      0, // maxFee: no fee expected
+      0 // minFinalityThreshold: 0 = finalized (default)
+    );
+    const burnReceipt = await burnTx.wait();
+
+    updateBridgeStep('burn', 'done');
+
+    // Save pending bridge state
+    const pendingData = {
+      sourceChainId,
+      destChainId,
+      amount,
+      burnTxHash: burnReceipt.transactionHash,
+      timestamp: Date.now(),
+      networkMode: currentNetworkMode,
+      status: 'attesting',
+      message: null,
+      attestation: null
+    };
+    savePendingBridge(pendingData);
+
+    // Step 3: Poll attestation
+    updateBridgeStep('attest', 'active');
+    bridgeButton.innerHTML = '<span class="button-spinner"></span>Waiting...';
+
+    const attestResult = await pollAttestation(burnReceipt.transactionHash, config.attestationApi, sourceConfig.domain);
+
+    pendingData.message = attestResult.message;
+    pendingData.attestation = attestResult.attestation;
+    pendingData.status = 'ready_to_mint';
+    savePendingBridge(pendingData);
+
+    updateBridgeStep('attest', 'done');
+
+    // Step 4: Mint on destination
+    updateBridgeStep('mint', 'active');
+    bridgeButton.innerHTML = '<span class="button-spinner"></span>Minting...';
+
+    const destProvider = getProviderForChainId(destChainId);
+    if (!destProvider) throw new Error('No RPC available for destination chain');
+
+    const destSigner = wallet.connect(destProvider);
+    const transmitter = new ethers.Contract(
+      config.messageTransmitter,
+      MESSAGE_TRANSMITTER_ABI,
+      destSigner
+    );
+
+    const mintTx = await transmitter.receiveMessage(attestResult.message, attestResult.attestation);
+    await mintTx.wait();
+
+    updateBridgeStep('mint', 'done');
+    clearPendingBridge();
+
+    showMessage('Bridge complete!', true);
+    await loadBalances(false);
+  } catch (error) {
+    console.error('Bridge error:', error);
+    // Mark current active step as error
+    const activeStep = document.querySelector('.bridge-step.active');
+    if (activeStep) {
+      activeStep.classList.remove('active');
+      activeStep.classList.add('error');
+    }
+    showMessage(`Bridge failed: ${error.reason || error.message || 'Unknown error'}`, false);
+  } finally {
+    bridgeButton.classList.remove('disabled');
+    bridgeButton.innerHTML = 'Bridge USDC';
+  }
+}
+
 // Initialize
 function init() {
   // Load custom chains, hidden chains, custom assets, hidden assets, custom RPC URLs, and built-in asset overrides from localStorage
@@ -1678,6 +2083,12 @@ function init() {
   document.querySelectorAll('[data-trigger]').forEach(trigger => {
     trigger.addEventListener('click', function() {
       const targetId = this.getAttribute('data-trigger');
+      if (targetId === 'walletBridge') {
+        populateBridgeModal();
+        resetBridgeSteps();
+        document.getElementById('bridge-status').style.display = 'none';
+        document.getElementById('bridge-amount').value = '';
+      }
       toggleModal(targetId);
     });
   });
@@ -3026,6 +3437,7 @@ window.saveAsset = saveAsset;
 window.resetBuiltInAsset = resetBuiltInAsset;
 window.deleteAssetWithConfirm = deleteAssetWithConfirm;
 window.toggleBuiltInAssetVisibility = toggleBuiltInAssetVisibility;
+window.bridgeUSDC = bridgeUSDC;
 
 // Start the app when DOM is ready
 if (document.readyState === 'loading') {

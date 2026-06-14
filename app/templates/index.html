@@ -61,6 +61,7 @@
   <div class="container-buttons">
     <button class="send" data-trigger="walletSend">Send</button>
     <button class="receive" data-trigger="walletReceive">Receive</button>
+    <button class="bridge" data-trigger="walletBridge">Bridge</button>
   </div>
   <div id="walletAssets"></div>
 
@@ -96,6 +97,27 @@
         <img src="imgs/icon-copy.svg" alt="Copy address" onclick="copyReceiveAddress()" class="copy-address-icon" width="18" height="18" title="Copy address">
       </p>
       <button class="share" onclick="share()">Share</button>
+    </div>
+  </div>
+  <div id="walletBridge" class="modal">
+    <div class="modal-content">
+      <p class="title-modal">Bridge</p>
+      <img class="close-modal" onclick="closeAllModals()" src="imgs/close-small.svg" alt="Close">
+      <p class="subheader">Source Chain</p>
+      <p id="bridge-source-chain" style="font-weight: 500; color: var(--text-primary); margin-bottom: 20px;"></p>
+      <p class="subheader">Destination Chain</p>
+      <select id="bridge-dest-chain" style="margin-bottom: 20px;"></select>
+      <p class="subheader">Amount (USDC)</p>
+      <input id="bridge-amount" type="text" placeholder="0.00">
+      <div id="bridge-status" style="display: none; margin-top: 20px;">
+        <div class="bridge-steps">
+          <div class="bridge-step" data-step="approve"><span class="bridge-step-icon"></span> Approve USDC</div>
+          <div class="bridge-step" data-step="burn"><span class="bridge-step-icon"></span> Burn on source chain</div>
+          <div class="bridge-step" data-step="attest"><span class="bridge-step-icon"></span> Waiting for attestation</div>
+          <div class="bridge-step" data-step="mint"><span class="bridge-step-icon"></span> Mint on destination chain</div>
+        </div>
+      </div>
+      <button id="bridge-confirm" onclick="bridgeUSDC()">Bridge USDC</button>
     </div>
   </div>
   <div id="setEns" class="modal">
